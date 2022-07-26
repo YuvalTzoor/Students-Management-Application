@@ -33,3 +33,5 @@ async function run(){
   app.listen(PORT,()=>console.log(`Listening to ${PORT}`))
 }
 run().catch(err=>console.log(err))
+
+let var2 = 0;
