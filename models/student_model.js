@@ -18,10 +18,10 @@ const student_schema = new mongoose.Schema({
     validate: { validator:(v)=>(v.length == 9 && v.trim() != '')}
   },
   name:{type: String,required:true,
-    validate: { validator:(v)=>(v.length == 1 && v.trim() != '')}
+    validate: { validator:(v)=>(v.length > 0 && v.trim() != '')}
   },
   city:{type: String,
-    validate: { validator:(v)=>(v.length == 1 && v.trim() != '')}
+    validate: { validator:(v)=>(v.length > 1 && v.trim() != '')}
   },
   toar:{
     type: String,required:true,
