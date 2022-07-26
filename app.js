@@ -35,3 +35,5 @@ async function run(){
 run().catch(err=>console.log(err))
 
 let var2 = 0;
+
+let var3 = 0;
