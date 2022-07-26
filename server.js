@@ -15,13 +15,13 @@ app.use(express.urlencoded({ extended:false}))
 
 
 //Router middleware
-app.use('/student', student_router)
-
+app.use('/student', student_router);
+// app.set('pugtemplates',path.join(__dirname))
+app.set('view engine', 'pug');
 
 //DB connection func
 async function run(){
   await mongoose.connect(uri);
-
   app.listen(PORT,()=>console.log(`Listening to ${PORT}`))
 }
 run().catch(err=>console.log(err))

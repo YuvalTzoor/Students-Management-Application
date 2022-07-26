@@ -11,7 +11,6 @@ const multerStorage = multer.diskStorage({
   cb(null, `${company}${ext}`);
   }
 })
-
 //Delete user func
 async function delete_user (req,res) {
   let id = req.params.id;
@@ -23,7 +22,6 @@ async function delete_user (req,res) {
       res.sendStatus(500)
   }
 }
-
 //Check if the image is a jpg ext
 const multerFiler = (req,file,cb) =>{
   const ext = path.extname(file.originalname);
@@ -42,19 +40,29 @@ const upload = multer({
 }).single('upfile')
 
 
+const u1 = new User ({
+  id: "123456789",
+  name: "dani",
+  city: "tel aviv",
+  toar: 'ba',
+  courses:[{cid:"12345",grade:50}]
+})
+
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
 router.get('/',async (req,res)=>{
-
+User.find({}, (err));
+const result = await query.exec()
+console.log(result);
+console.log("ok");
+res.render('test1');
 })
 
 //Loading an HTML Form for adding a new student to the DB
 router.get('/add', (req,res)=>{
-  
 })
 
 //Executing a POST request to delete a Student
 router.post('/delete/:id',async (req,res)=>{
-    
 })
 
 //Loading an updating page of a specific student
