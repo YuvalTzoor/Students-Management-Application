@@ -32,6 +32,7 @@ async function run(){
   await mongoose.connect(uri);
   app.listen(PORT,()=>console.log(`Listening to ${PORT}`))
 }
+<<<<<<< HEAD
 run().catch(err=>console.log(err))
 
 <<<<<<< HEAD
@@ -42,3 +43,7 @@ let var2 = 0;
 
 let var3 = 0;
 >>>>>>> new-branch
+=======
+run().catch(err => console.log(err))
+
+>>>>>>> 31d4d54e27553c84ecbabd076d97495a2d35cb52
