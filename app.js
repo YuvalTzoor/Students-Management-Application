@@ -32,4 +32,5 @@ async function run(){
   await mongoose.connect(uri);
   app.listen(PORT,()=>console.log(`Listening to ${PORT}`))
 }
-run().catch(err=>console.log(err))
+run().catch(err => console.log(err))
+

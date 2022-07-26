@@ -1,0 +1,1 @@
+console.log("Dani tizki the king of the universe");
