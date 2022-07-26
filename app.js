@@ -34,4 +34,8 @@ async function run(){
 }
 run().catch(err=>console.log(err))
 
+<<<<<<< HEAD
 let newVar = 0;
+=======
+let var2 = 0;
+>>>>>>> new-branch
