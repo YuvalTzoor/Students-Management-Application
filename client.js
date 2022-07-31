@@ -1,4 +1,5 @@
 const fs = require("fs");
+const http = require("http");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 //
@@ -22,26 +23,17 @@ async function processLineByLine(file_name) {
 		switch (params[0]) {
 			case "add_student":
 				// handle adding a student
+				const student_data = JSON.parse(params[1]);
+				const res = await httpJSONRequest("post", "/student", student_data);
+				console.log(student_data.name + " added");
 				break;
 			case "get_students":
 				// handle getting students
 
-				
 				// handle retrieving students
 
 				break;
 
-				//break;
-
-				//case ...:
-				//break;
-				//case ...:
-				//21
-
-				//break;
-				//default:
-
-				break;
 			default:
 				console.log("Unrecognized command (ignored):", line);
 		}

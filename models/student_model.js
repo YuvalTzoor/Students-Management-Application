@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const take_course_schema = new mongoose.Schema({
 	cid: {
-		String,
+		type: String,
 		required: true,
 		validate: { validator: (v) => v.length == 5 && v.trim() != "" },
 	},
 	grade: {
-		Number,
+		type: Number,
 		required: true,
 		min: 0,
 		max: 100,
@@ -17,21 +17,21 @@ const take_course_schema = new mongoose.Schema({
 const student_schema = new mongoose.Schema(
 	{
 		id: {
-			String,
+			type: String,
 			required: true,
 			validate: { validator: (v) => v.length == 9 && v.trim() != "" },
 		},
 		name: {
-			String,
+			type: String,
 			required: true,
-			validate: { validator: (v) => v.length == 1 && v.trim() != "" },
+			validate: { validator: (v) => v.length > 0 && v.trim() != "" },
 		},
 		city: {
-			String,
-			validate: { validator: (v) => v.length == 1 && v.trim() != "" },
+			type: String,
+			validate: { validator: (v) => v.length > 1 && v.trim() != "" },
 		},
 		toar: {
-			String,
+			type: String,
 			required: true,
 			enum: ["ba", "ma", "phd"],
 		},
