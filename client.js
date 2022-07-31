@@ -25,29 +25,22 @@ async function processLineByLine(file_name) {
 				break;
 			case "get_students":
 				// handle retrieving students
-<<<<<<< HEAD
+
 				break;
-=======
+
 				//break;
->>>>>>> 522856ef7aea3292cd8d735e1e3126535cb56224
+
 				//case ...:
 				//break;
 				//case ...:
 				//21
-<<<<<<< HEAD
+
 				//break;
 				//default:
-=======
+
 				break;
 			default:
->>>>>>> 522856ef7aea3292cd8d735e1e3126535cb56224
 				console.log("Unrecognized command (ignored):", line);
 		}
 	}
 }
-// For this app. to work, here you should call processLineByLine(..)
-<<<<<<< HEAD
-// and give it the name of the input f
-=======
-// and give it the name of the input file
->>>>>>> 522856ef7aea3292cd8d735e1e3126535cb56224
