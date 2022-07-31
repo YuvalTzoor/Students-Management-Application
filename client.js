@@ -24,6 +24,9 @@ async function processLineByLine(file_name) {
 				// handle adding a student
 				break;
 			case "get_students":
+				// handle getting students
+
+				
 				// handle retrieving students
 
 				break;
