@@ -41,12 +41,20 @@ const upload = multer({
 
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
 router.get("/", async (req, res) => {
-
+	try {
+		const users = await User.find();
+		res.render("students", { users });
+	} catch {
+		res.sendStatus(500);
+	}
 });
 
 //Loading an HTML Form for adding a new student to the DB
 router.get("/add", (req, res) => {
 	res.render("add_student");
+
+
+
 });
 
 //Executing a POST request to delete a Student
