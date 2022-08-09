@@ -12,13 +12,11 @@ var app = express();
 app.use(urlencodedParser);
 //
 // the st management router which will be mounted on the app's student Router
-const student_router = require("./routes/student");
-app.use("/student", student_router);
+const client_router = require("./routes/client");
+app.use("/client", client_router);
 app.set("view engine", "html");
 app.engine("html", require("ejs").renderFile);
-app.use(express.static(path.join(__dirname, "public")));
-//swap jade for ejs etc
-//swap jade for ejs etc
+
 const uri = "mongodb://localhost/academy",
 	options = { useNewUrlParser: true };
 
