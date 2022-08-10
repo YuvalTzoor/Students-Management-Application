@@ -1,0 +1,55 @@
+doctype
+html
+ head 
+  meta(charset='UTF-8')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  title Document
+ body
+  div 
+    form(action=dest+id method="POST") 
+      label(for="id") Id: 
+      input(type="text" disabled id="id" name="id" value=obj1.id) 
+      br
+      label(for="name") Name: 
+      input(type="text" id="name" name="name" value=obj1.name) 
+      br
+      label(for="City") City: 
+      input(type="text" id="City" name="city" value=obj1.city) 
+      br 
+      label(for="toar") Toar: 
+      select( type="text" id="Toar" name="toar" value="MA") 
+        if obj1.toar == 'ba'
+          option(value="ba" selected) BA
+        else 
+          option(value="ba") BA
+        if obj1.toar == 'ma'
+          option(value="ma" selected) MA
+        else 
+          option(value="ma") MA
+        if obj1.toar == 'phd'
+          option(value="phd" selected) PhD
+        else 
+          option(value="phd" ) PhD
+      br 
+      br
+      input(type="submit" value="Update student")
+    hr
+    table 
+      th 
+        td course 
+        td grade 
+      tr 
+        td 35000
+        td 95
+    hr
+    form(action=baseUrl+"/update/"+id+"/addcourse" method="POST") 
+      label(for="courseId") Course id: 
+      input(type="text"  id="courseId" name="cid" value="") 
+      br
+      label(for="grade") Grade: 
+      input(type="text" id="grade" name="grade" value="") 
+      br
+      input(type="submit" value="Add course")
+    a(href="/student") List students
+    
+    
