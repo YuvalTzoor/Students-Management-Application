@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const { default: mongoose } = require('mongoose');
 const uri = 'mongodb://localhost:27017/academy';
 const User = require('./models/student_model')
@@ -16,8 +17,8 @@ app.use(express.urlencoded({ extended:false}))
 
 //Router middleware
 app.use('/student', student_router);
-// app.set('pugtemplates',path.join(__dirname))
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname,'views') )
 
 //DB connection func
 async function run(){

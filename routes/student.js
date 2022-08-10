@@ -48,25 +48,102 @@ const u1 = new User ({
   courses:[{cid:"12345",grade:50}]
 })
 
+
+//Delete user func
+async function delete_user (req,res) {
+  let id = req.params.id;
+  try {
+      result = await User.deleteOne({ _id: id })
+      res.send("User deleted");
+  }
+  catch {
+      res.sendStatus(500)
+  }
+}
+
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
 router.get('/',async (req,res)=>{
-User.find({}, (err));
-const result = await query.exec()
-console.log(result);
-console.log("ok");
-res.render('test1');
-})
+  try{
+    const dest = "http://localhost:8080/student/delete/";
+    const students = await User.find();
+    res.render('main',{
+      obj1: students,
+      dest: dest
+    });
+  }catch(err){
+
+  }
+});
 
 //Loading an HTML Form for adding a new student to the DB
 router.get('/add', (req,res)=>{
+  res.render('add-form');
+})
+
+//Executing a POST request to add a Student
+router.post('/add', async (req,res)=>{
+  try{
+    const newStudent = await User.create(req.body);
+    console.log(req.body)
+    res.status(201).json({
+      status: 'success',
+      data: {
+        student: newStudent
+      }
+    });
+  }catch(err){
+    console.log(err);
+  }
 })
 
 //Executing a POST request to delete a Student
 router.post('/delete/:id',async (req,res)=>{
+	delete_user(req,res);
 })
 
 //Loading an updating page of a specific student
-router.get('/update/:id',  (req,res)=> {
+router.get('/update/:id',async (req,res)=> {
+  try{
+    const dest = "http://localhost:8080/student/update/";
+    const student = await User.findById(req.params.id)
+
+    res.render('update-form',{
+      obj1: student,
+      id: req.params.id,
+      dest: dest,
+      baseUrl: req.baseUrl
+    });
+  }catch(err){
+
+  }
+})
+
+router.post('/update/:id',async (req,res)=> {
+  try{
+    let query = req.params.id;
+    let update = await User.updateOne({_id:query},req.body)
+    res.redirect(req.baseUrl + "/update/" + req.params.id);
+    console.log(req.body);
+  }catch(err){
+
+  }
+})
+
+router.post('/update/:id/addcourse',async (req,res)=> {
+  try{
+    let query = req.params.id;
+    let update = await User.findOneAndUpdate({
+      _id:query
+    },{
+      $push: {
+        courses:{cid:req.body.cid,grade:req.body.grade}
+        }
+      })
+    res.redirect(req.baseUrl + "/update/" + req.params.id);
+    console.log(req.body);
+  }catch(err){
+    console.log(err);
+  }
 })
 
 
