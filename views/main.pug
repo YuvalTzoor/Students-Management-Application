@@ -7,23 +7,23 @@ html
 
  body
   div 
-    form(action="") 
+    form(action=baseUrl method="GET") 
       label(for="Toar") Toar: 
-      select( type="text" id="Toar" name="Toar" value="") 
-        option(value="-1") All
+      select( type="text" id="Toar" name="toar" value="") 
+        option(value="all") All
         option(value="ba") BA
         option(value="ma") MA
         option(value="phd") PHD
       br
       label(for="City") City: 
-      input(type="text" id="City" name="City" value="") 
+      input(type="text" id="City" name="city" value="") 
       br 
       br
       label(for="grade") Min. avg. grade: 
       input(type="number" id="grade" name="grade" value="") 
       br 
       br
-      input(type="button" value="Filter")
+      input(type="submit" value="Filter")
     table 
       th 
         td Id 
@@ -32,8 +32,8 @@ html
         tr
           td=item.id 
           td=item.name 
-          td 
-           form(action=dest+item._id method="POST") 
+          td
+           form(action=baseUrl+"/delete/"+item._id method="POST") 
             input(type="submit" value="delete")
           td
             button

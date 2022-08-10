@@ -40,15 +40,6 @@ const upload = multer({
 }).single('upfile')
 
 
-const u1 = new User ({
-  id: "123456789",
-  name: "dani",
-  city: "tel aviv",
-  toar: 'ba',
-  courses:[{cid:"12345",grade:50}]
-})
-
-
 //Delete user func
 async function delete_user (req,res) {
   let id = req.params.id;
@@ -65,10 +56,12 @@ async function delete_user (req,res) {
 router.get('/',async (req,res)=>{
   try{
     const dest = "http://localhost:8080/student/delete/";
-    const students = await User.find();
+    console.log(req.query);
+    const students = await User.find(req.query);
     res.render('main',{
       obj1: students,
-      dest: dest
+      dest: dest,
+      baseUrl: req.baseUrl
     });
   }catch(err){
 
@@ -85,12 +78,7 @@ router.post('/add', async (req,res)=>{
   try{
     const newStudent = await User.create(req.body);
     console.log(req.body)
-    res.status(201).json({
-      status: 'success',
-      data: {
-        student: newStudent
-      }
-    });
+    res.redirect(req.baseUrl + "/add");
   }catch(err){
     console.log(err);
   }

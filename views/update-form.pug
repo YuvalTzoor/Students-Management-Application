@@ -38,9 +38,10 @@ html
       th 
         td course 
         td grade 
-      tr 
-        td 35000
-        td 95
+      each item, i in obj1.courses
+        tr
+          td=item.cid 
+          td=item.grade 
     hr
     form(action=baseUrl+"/update/"+id+"/addcourse" method="POST") 
       label(for="courseId") Course id: 
