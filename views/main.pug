@@ -25,20 +25,22 @@ html
           label(for="grade") Min. avg. grade: 
           input(type="number" id="grade" name="grade" value="") 
         input.filter-btn(type="submit" value="Filter")
+        button.add-btn
+          a(href="/student/add") Add a student
     div.table-div    
-      table 
-        th 
-          td Id 
-          td Name 
-        each item, i in obj1
-          tr
-            td=item.id 
-            td=item.name 
-            td
-              form(action=baseUrl+"/delete/"+item._id method="POST") 
-                input(type="submit" value="delete")
-            td
-              button
-                a(href="/student/update/"+item._id) update  
-            
-        a(href="/student/add") Add a student
+      table.content-table
+        thead 
+          tr 
+            th Id 
+            th Name 
+        tbody     
+          each item, i in obj1
+            tr
+              td=item.id 
+              td=item.name 
+              td
+                form(action=baseUrl+"/delete/"+item._id method="POST") 
+                  input.table-btn(type="submit" value="delete")
+              td
+                button.table-btn
+                  a(href="/student/update/"+item._id) update  
