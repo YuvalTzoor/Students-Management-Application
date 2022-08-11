@@ -2,42 +2,43 @@ doctype
 html
  head 
   meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
   meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  link(rel="stylesheet" href="css/style.css")
   title Document
 
  body
-  div 
-    form(action=baseUrl method="GET") 
-      label(for="Toar") Toar: 
-      select( type="text" id="Toar" name="toar" value="") 
-        option(value="all") All
-        option(value="ba") BA
-        option(value="ma") MA
-        option(value="phd") PHD
-      br
-      label(for="City") City: 
-      input(type="text" id="City" name="city" value="") 
-      br 
-      br
-      label(for="grade") Min. avg. grade: 
-      input(type="number" id="grade" name="grade" value="") 
-      br 
-      br
-      input(type="submit" value="Filter")
-    table 
-      th 
-        td Id 
-        td Name 
-      each item, i in obj1
-        tr
-          td=item.id 
-          td=item.name 
-          td
-           form(action=baseUrl+"/delete/"+item._id method="POST") 
-            input(type="submit" value="delete")
-          td
-            button
-              a(href="/student/update/"+item._id) update  
-          
-    hr
-    a(href="/student/add") Add a student
+  div.main-div
+    div.form-div 
+      form(action=baseUrl method="GET") 
+        div.toar-div.form-input
+          label(for="Toar") Toar: 
+          select( type="text" id="Toar" name="toar" value="") 
+            option(value="all") All
+            option(value="ba") BA
+            option(value="ma") MA
+            option(value="phd") PHD
+        div.city-div.form-input  
+          label(for="City") City: 
+          input(type="text" id="City" name="city" value="") 
+        div.grade-div.form-input  
+          label(for="grade") Min. avg. grade: 
+          input(type="number" id="grade" name="grade" value="") 
+        input.filter-btn(type="submit" value="Filter")
+    div.table-div    
+      table 
+        th 
+          td Id 
+          td Name 
+        each item, i in obj1
+          tr
+            td=item.id 
+            td=item.name 
+            td
+              form(action=baseUrl+"/delete/"+item._id method="POST") 
+                input(type="submit" value="delete")
+            td
+              button
+                a(href="/student/update/"+item._id) update  
+            
+        a(href="/student/add") Add a student

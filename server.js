@@ -11,7 +11,7 @@ const PORT = 8080;
 const student_router = require('./routes/student')
 
 //Static middleware
-// app.use('/student', express.static('companies'))
+app.use(express.static(path.join(__dirname,'public')))
 app.use(express.urlencoded({ extended:false}))
 
 
