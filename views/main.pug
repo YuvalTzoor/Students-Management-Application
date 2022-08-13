@@ -4,7 +4,7 @@ html
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   meta(http-equiv='X-UA-Compatible' content='IE=edge')
-  link(rel="stylesheet" href="css/style.css")
+  link(rel="stylesheet" href="/css/main-style.css")
   title Document
 
  body
@@ -25,8 +25,9 @@ html
           label(for="grade") Min. avg. grade: 
           input(type="number" id="grade" name="grade" value="") 
         input.filter-btn(type="submit" value="Filter")
-        button.add-btn
-          a(href="/student/add") Add a student
+
+      form(action=baseUrl+"/add") 
+         input.add-btn(type="submit" value="Add a student") 
     div.table-div    
       table.content-table
         thead 

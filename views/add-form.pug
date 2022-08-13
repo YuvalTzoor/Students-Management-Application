@@ -3,29 +3,32 @@ html
  head 
   meta(charset='UTF-8')
   meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel="stylesheet" href="/css/add-style.css")
   title Document
-
+  
  body
-  div 
-    form(method='POST' action='/student/add') 
-      label(for="id") Id: 
-      input(type="text" id="id" name="id" value="") 
-      br
-      label(for="name") Name: 
-      input(type="text" id="name" name="name" value="") 
-      br
-      label(for="City") City: 
-      input(type="text" id="City" name="city" value="") 
-      br 
-      label(for="Toar") Toar: 
-      select( type="text" id="Toar" name="toar" value="") 
-        option(value="ba") BA
-        option(value="ma") MA
-        option(value="phd") PHD
-      br 
-      br
-      input(type="submit" value="Add student")
-      br
-      a(href="/student") List students
+  div.main-div 
+    div.form-div
+      form(method='POST' action='/student/add') 
+        label(for="id") Id: 
+        input(type="text" id="id" name="id" value="") 
+        br
+        label(for="name") Name: 
+        input(type="text" id="name" name="name" value="") 
+        br
+        label(for="City") City: 
+        input(type="text" id="City" name="city" value="") 
+        br 
+        label(for="Toar") Toar: 
+        select( type="text" id="Toar" name="toar" value="") 
+          option(value="ba") BA
+          option(value="ma") MA
+          option(value="phd") PHD
+        br 
+        br
+        input(type="submit" value="Add student")
+        br
+        a(href="/student") List students
 
     

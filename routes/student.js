@@ -56,7 +56,6 @@ async function delete_user (req,res) {
 router.get('/',async (req,res)=>{
   try{
     const dest = "http://localhost:8080/student/delete/";
-    console.log(req.query);
     const students = await User.find(req.query);
     res.render('main',{
       obj1: students,
@@ -69,8 +68,12 @@ router.get('/',async (req,res)=>{
 });
 
 //Loading an HTML Form for adding a new student to the DB
-router.get('/add', (req,res)=>{
-  res.render('add-form');
+router.get('/add',async (req,res)=>{
+  try{
+    res.render('add-form');
+  }catch(err){
+
+  }
 })
 
 //Executing a POST request to add a Student
