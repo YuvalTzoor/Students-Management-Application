@@ -1,0 +1,32 @@
+doctype
+html
+ head 
+  meta(charset='UTF-8')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel="stylesheet" href="/css/add-style.css")
+  title Document
+  
+ body
+  div.main-div 
+    div.form-div
+      form(method='POST' action='/student/add') 
+        div.id-div.form-input
+          label(for="id") Id: 
+          input(type="text" id="id" name="id" value="") 
+        div.name-div.form-input  
+          label(for="name") Name: 
+          input(type="text" id="name" name="name" value="") 
+        div.city-div.form-input
+          label(for="City") City: 
+          input(type="text" id="City" name="city" value="") 
+        div.toar-div.form-input
+          label(for="Toar") Toar: 
+          select( type="text" id="Toar" name="toar" value="") 
+            option(value="ba") BA
+            option(value="ma") MA
+            option(value="phd") PHD
+        input.add-btn(type="submit" value="Add student")
+        a(href="/student") List students
+
+    

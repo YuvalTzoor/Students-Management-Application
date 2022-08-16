@@ -1,5 +1,5 @@
-const helpers = require("./helpers");
 const express = require("express");
+const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -7,14 +7,19 @@ const http = require("http");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 const app = express();
+const bodyParser = require("body-parser");
+const User = require("./models/student_model");
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const port = process.env.PORT || 8081;
 
-const port = process.env.PORT || 8080;
-//app.use(express.static(__dirname + "/public"));
-app.use("/public", express.static("public"));
+app.use("/public/client_text_files", express.static("client_text_files"));
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "html");
+app.engine("html", require("ejs").renderFile);
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, "public/");
+		cb(null, "public/client_text_files");
 	},
 
 	// By default, multer removes file extensions so let's add them back
@@ -31,21 +36,25 @@ const storage = multer.diskStorage({
 			path.extname(file.originalname);
 	},
 });
+app.get("/choosing_text_file", async (req, res) => {
+	res.render("client_form.html");
+});
 
-app.post("/upload-profile-pic", (req, res) => {
+app.post("/upload_text_file", async (req, res) => {
 	console.log("uploading file");
-
-	// res.setHeader("Content-Type", "image/PNG");
-	// 'profile_pic' is the name of our file input field in the HTML form
 	let upload = multer({
 		storage: storage,
-		fileFilter: helpers.imageFilter,
-	}).single("profile_pic");
+		fileFilter: function (req, file, cb) {
+			// Accept text file Only only
+			if (!file.originalname.match(/\.(txt)$/)) {
+				req.fileValidationError = "Only text files are allowed!";
+				return cb(new Error("Only text files are allowed!"), false);
+			}
+			cb(null, true);
+		},
+	}).single("txt_file");
 
 	upload(req, res, function (err) {
-		console.log(req.file.path);
-		// req.file contains information of uploaded file
-		// req.body contains information of text fields, if there were any
 		if (req.fileValidationError) {
 			return res.send(req.fileValidationError);
 		} else if (!req.file) {
@@ -55,15 +64,19 @@ app.post("/upload-profile-pic", (req, res) => {
 		} else if (err) {
 			return res.send(err);
 		}
+		console.log(req.file.path);
+		res.setHeader("Content-type", "text/html");
+		fs.readFile(req.file.path, (e, data) => {
+			if (e) throw e;
+			res.send(
+				`<html><body>name of the uploaded file: ${req.file.originalname}</body></html><br>The contact of the file: ` +
+					data
+			);
+		});
 
-		// Display uploaded image for user validation
-		res.send(
-			`You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`
-		);
 		async function processLineByLine(file_name) {
 			const rs = fs.createReadStream(file_name);
-			// Note: we use the crlfDelay option to recognize all instances of CR LF
-			// ('\r\n') in input.txt as a single line break.
+
 			const rl = readline.createInterface({
 				input: rs,
 				crlfDelay: Infinity,
@@ -73,24 +86,31 @@ app.post("/upload-profile-pic", (req, res) => {
 				if (!line || line.startsWith("//")) {
 					continue;
 				}
-				// Ok, we have a non-empty non-comment line, let's see what command it is.
-				// We split the line into an array of string tokens (parts of the line).
+
 				const params = line.split(/[ \t]+/);
-				// The first token must be the command name
+				console.log(params);
 				switch (params[0]) {
 					case "add_student":
 						console.log("adding student");
 						// handle adding a student
 						const student_data = JSON.parse(params[1]);
 						console.log(student_data.name);
-						const res = await httpJSONRequest("post", "/student", student_data);
-						console.log(student_data.name + " added");
+						const u = new User({
+							id: student_data.id,
+							toar: student_data.toar,
+							city: student_data.city,
+							name: student_data.name,
+						});
+
+						try {
+							await u.save();
+							console.log("User saved OK");
+						} catch (err) {
+							console.log(err.message);
+						}
 						break;
 					case "get_students":
-						// handle getting students
-
-						// handle retrieving students
-
+					
 						break;
 
 					default:
@@ -102,5 +122,17 @@ app.post("/upload-profile-pic", (req, res) => {
 	});
 
 	//processLineByLine(req.file);
+});
+const uri = "mongodb://localhost/academy",
+	options = { useNewUrlParser: true };
+
+mongoose.connect(uri, options);
+var db = mongoose.connection;
+
+db.on("error", function (err) {
+	console.log("error connecting to server/db");
+});
+db.once("open", function () {
+	console.log("Connected to MongoDB: academy");
 });
 app.listen(port, () => console.log(`Listening on port ${port}...`));

@@ -1,0 +1,47 @@
+doctype
+html
+ head 
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  link(rel="stylesheet" href="/css/main-style.css")
+  title Document
+
+ body
+  div.main-div
+    div.form-div 
+      form(action=baseUrl method="GET") 
+        div.toar-div.form-input
+          label(for="Toar") Toar: 
+          select( type="text" id="Toar" name="toar" value="") 
+            option(value="all") All
+            option(value="ba") BA
+            option(value="ma") MA
+            option(value="phd") PHD
+        div.city-div.form-input  
+          label(for="City") City: 
+          input(type="text" id="City" name="city" value="") 
+        div.grade-div.form-input  
+          label(for="grade") Min. avg. grade: 
+          input(type="number" id="grade" name="grade" value="") 
+        input.filter-btn(type="submit" value="Filter")
+
+      form(action=baseUrl+"/add") 
+         input.add-btn(type="submit" value="Add a student") 
+    div.table-div    
+      table.content-table
+        thead 
+          tr 
+            th Id 
+            th Name 
+        tbody     
+          each item, i in obj1
+            tr
+              td=item.id 
+              td=item.name 
+              td
+                form(action=baseUrl+"/delete/"+item._id method="POST") 
+                  input.table-btn(type="submit" value="delete")
+              td
+                button.table-btn
+                  a(href="/student/update/"+item._id) update  

@@ -1,35 +1,28 @@
-// general utilities
-var express = require("express"),
-	mongoose = require("mongoose"),
-	bodyParser = require("body-parser"),
-	html = require("html"),
-	url = require("url"),
-	qstring = require("querystring");
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
-//
-var app = express();
+const express = require('express');
+const path = require('path');
+const { default: mongoose } = require('mongoose');
+const uri = 'mongodb://localhost:27017/academy';
+const User = require('./models/student_model')
+let app = express()
 
-app.use(urlencodedParser);
-//
-// the st management router which will be mounted on the app's student Router
-const client_router = require("./routes/client");
-app.use("/client", client_router);
-app.set("view engine", "html");
-app.engine("html", require("ejs").renderFile);
+const PORT = 8080;
 
-const uri = "mongodb://localhost/academy",
-	options = { useNewUrlParser: true };
+//Import user router
+const student_router = require('./routes/student')
 
-mongoose.connect(uri, options);
-var db = mongoose.connection;
+//Static middleware
+app.use(express.static(path.join(__dirname,'public')))
+app.use(express.urlencoded({ extended:false}))
 
-db.on("error", function (err) {
-	console.log("error connecting to server/db");
-});
-db.once("open", function () {
-	console.log("Connected to MongoDB: academy");
-});
 
-var server = app.listen(8080, function () {
-	console.log("Server started on port 8080");
-});
+//Router middleware
+app.use('/student', student_router);
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname,'views') )
+
+//DB connection func
+async function run(){
+  await mongoose.connect(uri);
+  app.listen(PORT,()=>console.log(`Listening to ${PORT}`))
+}
+run().catch(err=>console.log(err))
