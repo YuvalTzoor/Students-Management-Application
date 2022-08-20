@@ -8,13 +8,16 @@ const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 const app = express();
 const bodyParser = require("body-parser");
-const User = require("./models/student_model");
+const Student = require("./models/student_model");
+const Log = require("./models/log_model");
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 8080;
+const conn1 = mongoose.createConnection("mongodb://localhost/academy");
+const conn2 = mongoose.createConnection("mongodb://localhost/academylog");
 
 app.use("/public/client_text_files", express.static("client_text_files"));
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "html");
+app.set("view engine", "pug");
 app.engine("html", require("ejs").renderFile);
 
 const storage = multer.diskStorage({
@@ -94,23 +97,35 @@ app.post("/upload_text_file", async (req, res) => {
 						console.log("adding student");
 						// handle adding a student
 						const student_data = JSON.parse(params[1]);
-						console.log(student_data.name);
-						const u = new User({
+
+						const log_model = conn2.model("log_schema", Log.schema);
+						const log = new log_model({
+							action: "add_student",
+							method: "POST",
+							path: "/add_student",
+							runmode: "client",
+							when: new Date(),
+						});
+						console.log(log);
+						const st_model = conn1.model("student_schema", Student.schema);
+						const s = new st_model({
 							id: student_data.id,
 							toar: student_data.toar,
 							city: student_data.city,
 							name: student_data.name,
 						});
+						console.log(s);
 
 						try {
-							await u.save();
-							console.log("User saved OK");
+							await s.save();
+							await log.save();
+							console.log("Student saved successfully");
+							console.log("log saved successfully");
 						} catch (err) {
 							console.log(err.message);
 						}
 						break;
 					case "get_students":
-					
 						break;
 
 					default:
@@ -120,19 +135,6 @@ app.post("/upload_text_file", async (req, res) => {
 		}
 		processLineByLine(req.file.path);
 	});
-
-	//processLineByLine(req.file);
 });
-const uri = "mongodb://localhost/academy",
-	options = { useNewUrlParser: true };
 
-mongoose.connect(uri, options);
-var db = mongoose.connection;
-
-db.on("error", function (err) {
-	console.log("error connecting to server/db");
-});
-db.once("open", function () {
-	console.log("Connected to MongoDB: academy");
-});
 app.listen(port, () => console.log(`Listening on port ${port}...`));

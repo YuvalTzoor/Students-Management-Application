@@ -1,35 +1,45 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const take_course_schema = new mongoose.Schema({
-  cid: {
-    type: String,required:true,
-    validate: { validator:(v)=>(v.length == 5 && v.trim() != '')}
-  },
-  grade:{
-    type: Number,
-    required:true,
-    min:0,
-    max:100
-  }
+	cid: {
+		type: String,
+		required: true,
+		validate: { validator: (v) => v.length == 5 && v.trim() != "" },
+	},
+	grade: {
+		type: Number,
+		required: true,
+		min: 0,
+		max: 100,
+	},
 });
 
-const student_schema = new mongoose.Schema({
-  id:{type: String,required:true,
-    validate: { validator:(v)=>(v.length == 9 && v.trim() != '')}
-  },
-  name:{type: String,required:true,
-    validate: { validator:(v)=>(v.length > 0 && v.trim() != '')}
-  },
-  city:{type: String,
-    validate: { validator:(v)=>(v.length > 1 && v.trim() != '')}
-  },
-  toar:{
-    type: String,required:true,
-    enum: ['ba','ma','phd']
-  },
-  courses: [take_course_schema],
-}, {collection: 'Academy'});
+const student_schema = new mongoose.Schema(
+	{
+		id: {
+			type: String,
+			required: true,
+			validate: { validator: (v) => v.length == 9 && v.trim() != "" },
+		},
+		name: {
+			type: String,
+			required: true,
+			validate: { validator: (v) => v.length > 0 && v.trim() != "" },
+		},
+		city: {
+			type: String,
+			validate: { validator: (v) => v.length > 1 && v.trim() != "" },
+		},
+		toar: {
+			type: String,
+			required: true,
+			enum: ["ba", "ma", "phd"],
+		},
+		courses: [take_course_schema],
+	},
+	{ collection: "Academy" }
+);
 
-const user = mongoose.model('',student_schema);
+const Student = mongoose.model("student_schema", student_schema);
 
-module.exports = user;
+module.exports = Student;
