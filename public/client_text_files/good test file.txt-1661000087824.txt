@@ -1,0 +1,1 @@
+add_student {"id":"111111888","toar":"ma","city":"RG","name":"Yossi"} saveas st2

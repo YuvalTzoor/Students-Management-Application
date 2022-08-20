@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const objectid = mongoose.Types.ObjectId;
 
 const take_course_schema = new mongoose.Schema({
 	cid: {
@@ -16,6 +17,9 @@ const take_course_schema = new mongoose.Schema({
 
 const student_schema = new mongoose.Schema(
 	{
+		// _id: {
+		// 	type: String,
+		// },
 		id: {
 			type: String,
 			required: true,

@@ -14,7 +14,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 const port = process.env.PORT || 8080;
 const conn1 = mongoose.createConnection("mongodb://localhost/academy");
 const conn2 = mongoose.createConnection("mongodb://localhost/academylog");
-
+const objectid = mongoose.Types.ObjectId;
 app.use("/public/client_text_files", express.static("client_text_files"));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -39,11 +39,11 @@ const storage = multer.diskStorage({
 			path.extname(file.originalname);
 	},
 });
-app.get("/choosing_text_file", async (req, res) => {
+app.get("/client/choosing_text_file", async (req, res) => {
 	res.render("client_form.html");
 });
 
-app.post("/upload_text_file", async (req, res) => {
+app.post("/client/upload_text_file", async (req, res) => {
 	console.log("uploading file");
 	let upload = multer({
 		storage: storage,
@@ -57,7 +57,7 @@ app.post("/upload_text_file", async (req, res) => {
 		},
 	}).single("txt_file");
 
-	upload(req, res, function (err) {
+	upload(req, res, async function (err) {
 		if (req.fileValidationError) {
 			return res.send(req.fileValidationError);
 		} else if (!req.file) {
@@ -69,13 +69,6 @@ app.post("/upload_text_file", async (req, res) => {
 		}
 		console.log(req.file.path);
 		res.setHeader("Content-type", "text/html");
-		fs.readFile(req.file.path, (e, data) => {
-			if (e) throw e;
-			res.send(
-				`<html><body>name of the uploaded file: ${req.file.originalname}</body></html><br>The contact of the file: ` +
-					data
-			);
-		});
 
 		async function processLineByLine(file_name) {
 			const rs = fs.createReadStream(file_name);
@@ -91,43 +84,70 @@ app.post("/upload_text_file", async (req, res) => {
 				}
 
 				const params = line.split(/[ \t]+/);
-				console.log(params);
+				console.log(params[2]);
 				switch (params[0]) {
 					case "add_student":
-						console.log("adding student");
-						// handle adding a student
-						const student_data = JSON.parse(params[1]);
+						if (params[2] != "saveas") {
+							res.send("Error: saveas is missing!");
+						} else {
+							console.log("adding student");
 
-						const log_model = conn2.model("log_schema", Log.schema);
-						const log = new log_model({
-							action: "add_student",
-							method: "POST",
-							path: "/add_student",
-							runmode: "client",
-							when: new Date(),
-						});
-						console.log(log);
-						const st_model = conn1.model("student_schema", Student.schema);
-						const s = new st_model({
-							id: student_data.id,
-							toar: student_data.toar,
-							city: student_data.city,
-							name: student_data.name,
-						});
-						console.log(s);
+							// handle adding a student
+							const student_data = JSON.parse(params[1]);
+							const log_model = conn2.model("log_schema", Log.schema);
+							const log = new log_model({
+								action: "add_student",
+								method: "POST",
+								path: "client/upload_text_file",
+								runmode: "client",
+								when: new Date(),
+							});
+							console.log(log);
+							const st_model = conn1.model("student_schema", Student.schema);
+							const s = new st_model({
+								// _id: params[3],
+								id: student_data.id,
+								toar: student_data.toar,
+								city: student_data.city,
+								name: student_data.name,
+							});
+							console.log(s);
+							try {
+								await s.save();
+								console.log("Student saved successfully");
+								await log.save();
 
-						try {
-							await s.save();
-							await log.save();
-							console.log("Student saved successfully");
-							console.log("log saved successfully");
-						} catch (err) {
-							console.log(err.message);
+								console.log("log saved successfully");
+							} catch (err) {
+								console.log(err.message);
+							}
+							//console.log(await st_model.find({ id: "111111888" }).exec());
+							// fs.readFile(req.file.path, (e, data) => {
+							// 	if (e) throw e;
+							// 	res.send(
+							// 		`<html><body>name of the uploaded file: ${req.file.originalname}</body></html><br>The contact of the file: ` +
+							// 			data
+							// 	);
+							// });
+							break;
 						}
+					case "get_students": {
+						console.log("get_students");
+						//res.send("student_data");
 						break;
-					case "get_students":
+					}
+					case "update_student": {
 						break;
-
+					}
+					case "add_course": {
+						break;
+					}
+					case "del_student": {
+						break;
+					}
+					case "del_all": {
+						break;
+					}
 					default:
 						console.log("Unrecognized command (ignored):", line);
 				}
