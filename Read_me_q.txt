@@ -8,3 +8,5 @@ change the html form to the pug format-done
 
 how to write find function in moongose exmple
 console.log(await st_model.find({ name: "Yossi" }).exec());
+
+After running the server file a folder of companies is created and I cant understand way

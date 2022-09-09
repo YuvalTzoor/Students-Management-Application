@@ -5,17 +5,22 @@ var path = require("path");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 const app = express();
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
+const Student = (global.Student = require("./models/student_model"));
+const Log = (global.Log = require("./models/log_model"));
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+//const port = process.env.PORT || 8080;
 const conn1 = (global.conn1 = mongoose.createConnection(
 	"mongodb://localhost/academy"
 ));
-
+// console.log(global.conn1);
 const conn2 = (global.conn2 = mongoose.createConnection(
 	"mongodb://localhost/academylog"
 ));
 app.use("/client_input", express.static("client_input"));
-//getting the file name from the client-Remember to wite like the following:client.js client_input/good file1.txt
+//getting the file name from the client
 let arguments = process.argv.slice(2);
-
 console.log(arguments);
 let fullFileName = "";
 if (arguments.length == 1) {
@@ -50,15 +55,14 @@ async function processLineByLine(file_name) {
 		console.log(params);
 
 		switch (params[0]) {
-			case "add_student": {
-				//Checking if the line is valid or not
+			case "add_student":
 				try {
 					JSON.parse(params[1]);
 				} catch (err) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
-				//checking if there is saveas parameter or not
+
 				if (params[2] != "saveas") {
 					//saveas is optional!
 					saveasFlag = false;
@@ -68,53 +72,48 @@ async function processLineByLine(file_name) {
 					saveasFlag = true;
 				}
 				console.log("adding student");
-				async function run() {
-					console.log("run");
+
+				//
+				async function run(stu_data) {
 					let reply;
 					reply = await httpJSONRequest(
 						"post",
 						"http://localhost:8080/student/add",
-						params[1]
+						JSON.stringify(params[1])
 					);
-					//returning the student id ooj that got just got created
-					console.log(
-						"The reply of the student object that added to the data base:" +
-							JSON.stringify(reply)
-					);
+					console.log(reply + "reply");
+				}
+				run(JSON.parse(params[1])).catch((err) => console.log(err));
+				const student_data = JSON.parse(params[1]);
+				const log_model = conn2.model("log_schema", Log.schema);
+				const log = new log_model({
+					action: "add_student",
+					method: "POST",
+					path: "client/upload_text_file",
+					runmode: "client",
+					when: new Date(),
+				});
+				console.log(log);
+				const st_model = conn1.model("student_schema", Student.schema);
+				const stu = new st_model({
+					id: student_data.id,
+					toar: student_data.toar,
+					city: student_data.city,
+					name: student_data.name,
+				});
+				console.log(stu);
+				try {
+					await stu.save();
+					console.log("Student saved successfully");
+					await log.save();
+
+					console.log("log saved successfully");
+				} catch (err) {
+					console.log(err.message);
 				}
 
-				console.log(run());
-				//Just a example template for saving the logs and students data into two separate DBs:
-				// const student_data = JSON.parse(params[1]);
-				// const log_model = conn2.model("log_schema", Log.schema);
-				// const log = new log_model({
-				// 	action: "add_student",
-				// 	method: "POST",
-				// 	path: "client/upload_text_file",
-				// 	runmode: "client",
-				// 	when: new Date(),
-				// });
-				// console.log(log);
-				// const st_model = conn1.model("student_schema", Student.schema);
-				// const stu = new st_model({
-				// 	id: student_data.id,
-				// 	toar: student_data.toar,
-				// 	city: student_data.city,
-				// 	name: student_data.name,
-				// });
-				// console.log(stu);
-				// try {
-				// 	await stu.save();
-				// 	console.log("Student saved successfully");
-				// 	await log.save();
-
-				// 	console.log("log saved successfully");
-				// } catch (err) {
-				// 	console.log(err.message);
-				// }
-
 				break;
-			}
+
 			case "get_students": {
 				//get_students {"toar":"ma"} expected_saveas_names [‘st1’,’st2’]
 				console.log("get_students");
@@ -145,7 +144,7 @@ async function processLineByLine(file_name) {
 	}
 }
 //check what is the file type and allowing only txt files
-console.log(file);
+console.log(path.extname(file));
 if (path.extname(file) == ".txt") {
 	processLineByLine(file);
 } else if (path.extname(file) != ".txt") {
