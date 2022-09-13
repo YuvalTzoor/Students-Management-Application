@@ -13,13 +13,13 @@ html
       form(method='POST' action='/student/add') 
         div.id-div.form-input
           label(for="id") Id: 
-          input(type="text" id="id" name="id" value="") 
+          input(type="text" id="id" name="id" value="" required) 
         div.name-div.form-input  
           label(for="name") Name: 
-          input(type="text" id="name" name="name" value="") 
+          input(type="text" id="name" name="name" value="" required) 
         div.city-div.form-input
           label(for="City") City: 
-          input(type="text" id="City" name="city" value="") 
+          input(type="text" id="City" name="city" value="" required) 
         div.toar-div.form-input
           label(for="Toar") Toar: 
           select( type="text" id="Toar" name="toar" value="") 
@@ -28,5 +28,3 @@ html
             option(value="phd") PHD
         input.add-btn(type="submit" value="Add student")
         a(href="/student") List students
-
-    

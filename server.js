@@ -1,3 +1,6 @@
+global.workMode = "";
+let tempWmode = process.argv[2];
+console.log("workMode is " + tempWmode);
 const express = require('express');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
@@ -9,11 +12,20 @@ const PORT = 8080;
 
 //Import user router
 const student_router = require('./routes/student')
-
 //Static middleware
 app.use(express.static(path.join(__dirname,'public')))
-app.use(express.urlencoded({ extended:false}))
+// app.use(express.urlencoded({ extended:false}))
 
+if (tempWmode == "--json") {
+	global.workMode = "JSON";
+} else{
+	global.workMode = "HTML";
+}
+if (global.workMode == "JSON") {
+	app.use(express.json());
+} else if (global.workMode == "HTML") {
+	app.use(express.urlencoded({ extended: false }));
+}
 
 //Router middleware
 app.use('/student', student_router);
