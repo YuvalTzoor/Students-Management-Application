@@ -1,4 +1,5 @@
 const express = require("express");
+const internal_storage = {};
 const mongoose = require("mongoose");
 const fs = require("fs");
 var path = require("path");
