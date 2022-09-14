@@ -6,6 +6,7 @@ var path = require("path");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 const app = express();
+var saveas = "";
 const conn1 = (global.conn1 = mongoose.createConnection(
 	"mongodb://localhost/academy"
 ));
@@ -69,8 +70,7 @@ async function processLineByLine(file_name) {
 					saveasFlag = true;
 				}
 				console.log("adding student");
-				// if (saveasFlag) {
-				// 	internal_storage
+
 				async function run() {
 					console.log("run");
 					let reply;
@@ -79,7 +79,25 @@ async function processLineByLine(file_name) {
 						"http://localhost:8080/student/add",
 						params[1]
 					);
-					//returning the student id ooj that got just got created
+					//returning the student id of the got just got created and also saving the object into the
+					//internal_storage variable for future uses
+					if (saveasFlag) {
+						//Taking the replay string and make into JSON string and then
+						//making it into JSON object in order to use the variables as required
+						//and saving it inside the saveas name inside the internal_storage
+						console.log(reply + "reply");
+						let result = JSON.stringify(reply);
+						result = JSON.parse(result);
+						console.log(result[0]._id);
+						saveas = params[3];
+						internal_storage[saveas] = result[0];
+						console.log(internal_storage[saveas] + "saveas");
+						//for testing!
+						// //const the_doc_id = internal_storage[saveas]._id;
+						// console.log("the_doc_id: " + the_doc_id);
+						// console.log(internal_storage);
+					}
+
 					console.log(
 						"The reply of the student object that added to the data base:" +
 							JSON.stringify(reply)
@@ -87,35 +105,6 @@ async function processLineByLine(file_name) {
 				}
 
 				console.log(run());
-				//Just a example template for saving the logs and students data into two separate DBs:
-				// const student_data = JSON.parse(params[1]);
-				// const log_model = conn2.model("log_schema", Log.schema);
-				// const log = new log_model({
-				// 	action: "add_student",
-				// 	method: "POST",
-				// 	path: "client/upload_text_file",
-				// 	runmode: "client",
-				// 	when: new Date(),
-				// });
-				// console.log(log);
-				// const st_model = conn1.model("student_schema", Student.schema);
-				// const stu = new st_model({
-				// 	id: student_data.id,
-				// 	toar: student_data.toar,
-				// 	city: student_data.city,
-				// 	name: student_data.name,
-				// });
-				// console.log(stu);
-				// try {
-				// 	await stu.save();
-				// 	console.log("Student saved successfully");
-				// 	await log.save();
-
-				// 	console.log("log saved successfully");
-				// } catch (err) {
-				// 	console.log(err.message);
-				// }
-
 				break;
 			}
 			case "get_students": {

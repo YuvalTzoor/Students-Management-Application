@@ -1,6 +1,6 @@
-add_student {"id":"205541600","toar":"ba","city":"RG","name":"Yossi"} saveas st1
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded"} saveas saveasst1
 
 
 
 
-del_all
+

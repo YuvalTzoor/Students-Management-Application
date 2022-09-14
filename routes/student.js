@@ -117,8 +117,9 @@ router.post("/add", async (req, res) => {
 						_id: newStudent._id,
 					})
 					.exec();
-				console.log(stu_added_obj);
-				res.send(stu_added_obj);
+				console.log(stu_added_obj)
+				console.log(stu_added_obj[0]._id+"_identifier");
+				res.send(JSON.stringify(stu_added_obj));
 				const log_model = conn2.model("log_schema", Log.schema);
 				const log = new log_model({
 					action: "add_student",
