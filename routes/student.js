@@ -151,8 +151,18 @@ router.post("/deleteall", async (req, res) => {
 	} else if (global.workMode == "JSON") {
 		try {
 			const students = await global.Student.collection.drop();
+			const log_model = conn2.model("log_schema", Log.schema);
+			const log = new log_model({
+				action: "del_all",
+				method: "post",
+				path: "student/deleteall",
+				runmode: "JSON",
+				when: new Date(),
+			});
+			await log.save();
 			res.json("OK");
 			console.log("All students deleted successfully");
+			console.log("log saved successfully");
 		} catch (err) {
 			console.log(err);
 			res.json("FAILED");
