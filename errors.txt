@@ -2,7 +2,7 @@
 2)Need to add message to the adding student form that will say "Successfully added a new student" 
 and will keep the data of the added student and will not clean the parameters from the form
 3)Form location fix(I have a screenshot of the issue)
-4)Why we need to add to the server
+
 Added-
 redirect after deleting the student-fixed
 When adding a student and there is an error,an error message is not getting send in the res.send-fixed
