@@ -1,7 +1,7 @@
-1)Its possible to add a student with the same ID number
-2)Need to add message to the adding student form that will say "Successfully added a new student" 
+
+1)Need to add message to the adding student form that will say "Successfully added a new student" 
 and will keep the data of the added student and will not clean the parameters from the form
-3)Form location fix(I have a screenshot of the issue)
+2)Form table colons location fix(there is a screenshot of the issue)
 
 Added-
 redirect after deleting the student-fixed
