@@ -69,6 +69,8 @@ async function processLineByLine(file_name) {
 					saveasFlag = true;
 				}
 				console.log("adding student");
+				// if (saveasFlag) {
+				// 	internal_storage
 				async function run() {
 					console.log("run");
 					let reply;
@@ -138,6 +140,22 @@ async function processLineByLine(file_name) {
 				break;
 			}
 			case "del_all": {
+				async function run() {
+					console.log("run");
+					let reply;
+					reply = await httpJSONRequest(
+						"post",
+						"http://localhost:8080/student/deleteall"
+					);
+					//returning the student id ooj that got just got created
+					console.log(
+						"The reply of the deleting all students objects that currently in the data base:" +
+							JSON.stringify(reply)
+					);
+				}
+
+				console.log(run());
+
 				break;
 			}
 			default:

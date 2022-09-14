@@ -13,7 +13,7 @@ const router = express.Router();
 async function delete_user(req, res) {
 	let id = req.params.id;
 	try {
-		result = await User.deleteOne({ _id: id });
+		result = await global.Student.deleteOne({ _id: id });
 		console.log("User deleted");
 		setTimeout(() => {
 			res.redirect("http://localhost:8080/student/");
@@ -144,7 +144,21 @@ router.post("/add", async (req, res) => {
 router.post("/delete/:id", async (req, res) => {
 	delete_user(req, res);
 });
-
+//Executing a POST request to delete all the Students at the DB
+router.post("/deleteall", async (req, res) => {
+	if (global.workMode == "HTML") {
+		res.send("Failed to delete all students");
+	} else if (global.workMode == "JSON") {
+		try {
+			const students = await global.Student.collection.drop();
+			res.json("OK");
+			console.log("All students deleted successfully");
+		} catch (err) {
+			console.log(err);
+			res.json("FAILED");
+		}
+	}
+});
 //Loading an updating page of a specific student
 router.get("/update/:id", async (req, res) => {
 	try {
