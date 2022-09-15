@@ -204,33 +204,53 @@ router.post("/deleteall", async (req, res) => {
 });
 //Loading an updating page of a specific student
 router.get("/update/:id", async (req, res) => {
-	try {
-		const dest = "http://localhost:8080/student/update/";
-		const student = await global.Student.findById(req.params.id);
+	if (global.workMode == "HTML") {
+		try {
+			const dest = "http://localhost:8080/student/update/";
+			const student = await global.Student.findById(req.params.id);
 
-		res.render("update-form", {
-			obj1: student,
-			id: req.params.id,
-			dest: dest,
-			baseUrl: req.baseUrl,
-		});
-	} catch (err) {}
+			res.render("update-form", {
+				obj1: student,
+				id: req.params.id,
+				dest: dest,
+				baseUrl: req.baseUrl,
+			});
+		} catch (err) {}
+	} else if (global.workMode == "JSON") {
+		res.send("Failed to update student");
+	}
 });
 
 router.post("/update/:id", async (req, res) => {
-	try {
-		let query = req.params.id;
-		const opts = { runValidators: true, new: true };
-		const st = await global.Student.findOneAndUpdate(
-			{ _id: query },
-			{ $set: req.body },
-			opts
-		);
-		let update = await global.Student.updateOne(st);
-		res.redirect(req.baseUrl + "/update/" + req.params.id);
-		console.log(req.body);
-	} catch (err) {
-		res.send("FAILED");
+	if (global.workMode == "HTML") {
+		try {
+			let query = req.params.id;
+			const opts = { runValidators: true, new: true };
+			const st = await global.Student.findOneAndUpdate(
+				{ _id: query },
+				{ $set: req.body },
+				opts
+			);
+			let update = await global.Student.updateOne(st);
+			res.redirect(req.baseUrl + "/update/" + req.params.id);
+			console.log(req.body);
+		} catch (err) {
+			res.send("FAILED");
+		}
+	} else if (global.workMode == "JSON") {
+		try {
+			let query = req.params.id;
+			const opts = { runValidators: true, new: true };
+			const st = await global.Student.findOneAndUpdate(
+				{ _id: query },
+				{ $set: req.body },
+				opts
+			);
+			let update = await global.Student.updateOne(st);
+			res(update);
+		} catch (err) {
+			res.send("FAILED");
+		}
 	}
 });
 

@@ -138,8 +138,9 @@ async function processLineByLine(file_name) {
 					let result = JSON.stringify(reply);
 					result = JSON.parse(result);
 					const data = reply;
-					//printing the data of all returned students
+					//the array that will have the students documents ids for the response for the client
 					const ID_array_to_return = [];
+					//printing the data of all returned students
 					data.forEach((obj) => {
 						Object.entries(obj).forEach(([key, value]) => {
 							if (key == "_id") {
@@ -163,6 +164,42 @@ async function processLineByLine(file_name) {
 				break;
 			}
 			case "update_student": {
+				try {
+					JSON.parse(params[1]);
+				} catch (err) {
+					console.log(`Line ---- ${line} ---- was corrupted`);
+					break;
+				}
+				async function run() {
+					saveas = params[3];
+					const the_doc_id = internal_storage[saveas]._id;
+						console.log("run");
+						let reply;
+						reply = await httpJSONRequest(
+							"post",
+							`http://localhost:8080/student/update/:id`,
+							params[1]
+						);
+						//returning the student id of the got just got created and also saving the object into the
+						//internal_storage variable for future uses
+						
+						internal_storage[saveas] = result[0];
+						console.log(internal_storage[saveas] + "saveas");
+						//for testing!
+						// //const the_doc_id = internal_storage[saveas]._id;
+						// console.log("the_doc_id: " + the_doc_id);
+						// console.log(internal_storage);
+						}
+
+						console.log(
+							"The reply of the student object that added to the data base:" +
+								JSON.stringify(reply)
+						);
+					}
+
+					console.log(run());
+				console.log("update_student");
+
 				break;
 			}
 			case "add_course": {

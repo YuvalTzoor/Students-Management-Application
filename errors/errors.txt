@@ -10,6 +10,8 @@ Added-
 Needs to get Added-
 1)JSON and HTML endpoints for illegal paths.
 
+Needs to validate-
+1)See if JSON mode can handel the errors!
 
 optional-
 1)close the client connection after it has been done.
