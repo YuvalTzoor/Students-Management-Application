@@ -65,9 +65,41 @@ router.get("/", async (req, res) => {
 			});
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for adding student");
+			try {
+				const filter = {
+					$expr: { $and: [] },
+				};
+				const bodyObj = {
+					toar: req.query.toar,
+					city: req.query.city,
+					grade: req.query.grade,
+				};
+				if (bodyObj.city && bodyObj.city.trim() != "") {
+					filter["$expr"]["$and"].push({ $eq: ["$city", bodyObj.city] });
+				}
+				if (bodyObj.toar && bodyObj.toar.trim() != "") {
+					if (bodyObj.toar === "all") {
+					} else {
+						filter["$expr"]["$and"].push({ $eq: ["$toar", bodyObj.toar] });
+					}
+				}
+				if (bodyObj.grade && bodyObj.grade.trim() != "") {
+					avg_num = bodyObj.grade * 1;
+					filter["$expr"]["$and"].push({
+						$gte: [{ $avg: "$courses.grade" }, avg_num],
+					});
+				}
+				const students = await global.Student.find(filter);
+				const JSONrespond = JSON.stringify(students);
+				res.send(JSONrespond);
+				//console.log(bodyObj);
+			} catch {
+				console.log("Error");
+				res.send("FAILED");
+			}
 		}
 	} catch (err) {
-		console.log(err);
+		res.send("FAILED");
 	}
 });
 
@@ -117,8 +149,8 @@ router.post("/add", async (req, res) => {
 						_id: newStudent._id,
 					})
 					.exec();
-				console.log(stu_added_obj)
-				console.log(stu_added_obj[0]._id+"_identifier");
+				console.log(stu_added_obj);
+				console.log(stu_added_obj[0]._id + "_identifier");
 				res.send(JSON.stringify(stu_added_obj));
 				const log_model = conn2.model("log_schema", Log.schema);
 				const log = new log_model({

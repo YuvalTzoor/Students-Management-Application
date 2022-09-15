@@ -5,15 +5,16 @@ const fs = require("fs");
 var path = require("path");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
+const { MaxKey } = require("bson");
 const app = express();
 var saveas = "";
-const conn1 = (global.conn1 = mongoose.createConnection(
-	"mongodb://localhost/academy"
-));
+// const conn1 = (global.conn1 = mongoose.createConnection(
+// 	"mongodb://localhost/academy"
+// ));
 
-const conn2 = (global.conn2 = mongoose.createConnection(
-	"mongodb://localhost/academylog"
-));
+// const conn2 = (global.conn2 = mongoose.createConnection(
+// 	"mongodb://localhost/academylog"
+// ));
 app.use("/client_input", express.static("client_input"));
 //getting the file name from the client-Remember to wite like the following:client.js client_input/good file1.txt
 let arguments = process.argv.slice(2);
@@ -107,16 +108,58 @@ async function processLineByLine(file_name) {
 				console.log(run());
 				break;
 			}
+
 			case "get_students": {
-				//get_students {"toar":"ma"} expected_saveas_names [‘st1’,’st2’]
+				//Checking if the line is valid or not
+				try {
+					JSON.parse(params[1]);
+				} catch (err) {
+					console.log(`Line ---- ${line} ---- was corrupted`);
+					break;
+				}
 				console.log("get_students");
+				const get_data = JSON.parse(params[1]);
 				//getting students from the mongoDB database according to the given parameters
-				const st_model = global.conn1.model(
-					"student_schema",
-					global.Student.schema
-				);
-				const students = await st_model.find({ toar: "ba" }).exec();
-				console.log(students);
+				let query = "";
+				Object.keys(get_data).forEach((key) => {
+					if (query) {
+						query += "&" + key + "=" + get_data[key];
+					} else {
+						query += key + "=" + get_data[key];
+					}
+				});
+				const url = "http://localhost:8080/student/?" + query;
+				console.log(url);
+				async function run() {
+					console.log("run");
+					let reply;
+					reply = await httpJSONRequest("get", url);
+					//returning the student id ooj that got just got created for testing purposes
+					let result = JSON.stringify(reply);
+					result = JSON.parse(result);
+					const data = reply;
+					//printing the data of all returned students
+					const ID_array_to_return = [];
+					data.forEach((obj) => {
+						Object.entries(obj).forEach(([key, value]) => {
+							if (key == "_id") {
+								ID_array_to_return.push(value);
+							}
+							console.log(`${key} ${value}`);
+						});
+						console.log("-------------------");
+					});
+
+					console.log(result.length);
+
+					console.log(
+						"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
+							ID_array_to_return
+					);
+				}
+
+				console.log(run());
+
 				break;
 			}
 			case "update_student": {
@@ -129,6 +172,13 @@ async function processLineByLine(file_name) {
 				break;
 			}
 			case "del_all": {
+				//Checking if the line is valid or not
+				try {
+					JSON.parse(params[0]);
+				} catch (err) {
+					console.log(`Line ---- ${line} ---- was corrupted`);
+					break;
+				}
 				async function run() {
 					console.log("run");
 					let reply;

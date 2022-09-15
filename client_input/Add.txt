@@ -1,6 +1,4 @@
-add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded"} saveas saveasst1
+get_students {"city":"RG","avg":80} expected_num_documents 3
 
 
-
-
-
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded"} saveas st1
