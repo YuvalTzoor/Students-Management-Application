@@ -18,7 +18,7 @@ html
             input(type="text" id="name" name="name" value=obj1.name required) 
           div.city-div.form-input
             label(for="City") City: 
-            input(type="text" id="City" name="city" value=obj1.city required) 
+            input(type="text" id="City" name="city" value=obj1.city ) 
           div.toar-div.form-input
             label(for="toar") Toar: 
             select( type="text" id="Toar" name="toar" value="MA") 
@@ -40,7 +40,7 @@ html
           label(for="courseId") Course id: 
           input(type="text"  id="courseId" name="cid" value="" required) 
           label(for="grade") Grade: 
-          input(type="text" id="grade" name="grade" value="" required) 
+          input(type="number" min="0" max="100" id="grade" name="grade" value="" required) 
           input(type="submit" value="Add course")
           a(href="/student") List students
     .second-div 
