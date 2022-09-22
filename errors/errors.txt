@@ -9,6 +9,7 @@ Added-
 
 Needs to get Added-
 1)JSON and HTML endpoints for illegal paths.
+2)Saving logs at all the endpoints
 
 Needs to validate-
 1)See if JSON mode can handel the errors!
