@@ -1,15 +1,20 @@
 errors-
-1)Need to add message to the adding student form that will say "Successfully added a new student" 
+1)Need to add message to the adding student form that will say "Successfully added a new student" -fixed
 and will keep the data of the added student and will not clean the parameters from the form.
-2)Form table colons location fix(there is a screenshot of the issue).
+2)Form table colons location fix(there is a screenshot of the issue).-fixed
+3)update student don't work-fixed
+4)adding a course don't work-fixed
+5)academylog collection in academy getting created without a reason
 
 Added-
 1)redirect after deleting the student-fixed
 2)When adding a student and there is an error,an error message is not getting send in the res.send-fixed
 
 Needs to get Added-
-1)JSON and HTML endpoints for illegal paths.
+1)JSON and HTML endpoints for illegal paths
 2)Saving logs at all the endpoints
+3)Confirmation before delete student
+4)adding html about courses for 5 numbers only
 
 Needs to validate-
 1)See if JSON mode can handel the errors!

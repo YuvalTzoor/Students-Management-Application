@@ -8,7 +8,6 @@ html
  body
   div.main-div
     .first-div 
-      div.update-div
         form(action=dest+id method="POST") 
           div.id-div.form-input
             label(for="id") Id: 
@@ -34,24 +33,30 @@ html
                 option(value="phd" selected) PhD
               else 
                 option(value="phd" ) PhD
-            input(type="submit" value="Update student")
-      .add-course-div 
-        form(action=baseUrl+"/update/"+id+"/addcourse" method="POST") 
-          label(for="courseId") Course id: 
-          input(type="text"  id="courseId" name="cid" value="" required) 
-          label(for="grade") Grade: 
-          input(type="number" min="0" max="100" id="grade" name="grade" value="" required) 
-          input(type="submit" value="Add course")
-          a(href="/student") List students
+          div.form-input.btn
+           input(type="submit" value="Update student")
+        a(href="/student") Students List
     .second-div 
+      .add-course-div 
+          form(action=baseUrl+"/update/"+id+"/addcourse" method="POST") 
+            div.course-form-input
+              label(for="courseId") Course id: 
+              input(type="text"  id="courseId" name="cid" value="" required) 
+            div.course-form-input   
+              label(for="grade") Grade: 
+              input(type="number" min="0" max="100" id="grade" name="grade" value="" required)
+            .course-form-input.btn     
+              input(type="submit" value="Add course")
       .table-div 
-        table 
-          th 
-            td course 
-            td grade 
-          each item, i in obj1.courses
-            tr
-              td=item.cid 
-              td=item.grade 
+        table.content-table
+          thead
+            tr 
+              th course 
+              th grade 
+          tbody 
+            each item, i in obj1.courses
+              tr
+                td=item.cid 
+                td=item.grade 
     
     

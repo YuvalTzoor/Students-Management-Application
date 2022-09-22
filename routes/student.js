@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path')
 const { default: mongoose } = require('mongoose');
-const Student = require('../models/student_model')
+const Student = require('../models/student_model');
 // global.Student = require("../models/student_model");
 const Log = require("../models/log_model");
 // global.conn1 = mongoose.createConnection("mongodb://localhost/academy");
@@ -27,9 +27,9 @@ let addStudentMsg = false;
 async function delete_user (req,res) {
   let id = req.params.id;
   try {
-		
       result = await Student.deleteOne({ _id: id })
-			if(resul.deletedCount !== 1){
+			console.log(result);
+			if(result.deletedCount !== 1){
 				res.send("Could not delete student")
 				return
 			}
@@ -230,7 +230,7 @@ router.post('/update/:id',async (req,res)=> {
 		if (global.workMode == "HTML") {
 			let query = req.params.id;
 			const opts = { runValidators: true, new: true };
-			const st = await global.Student.findOneAndUpdate(
+			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
@@ -241,12 +241,12 @@ router.post('/update/:id',async (req,res)=> {
 		}else if (global.workMode == "JSON"){
 			let query = req.params.id;
 			const opts = { runValidators: true, new: true };
-			const st = await global.Student.findOneAndUpdate(
+			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
 			);
-			let update = await global.Student.updateOne(st);
+			let update = await Student.updateOne(st);
 			res(update);
 		}
 	}catch(err){
@@ -276,6 +276,7 @@ router.post('/update/:id/addcourse',async (req,res)=> {
     res.redirect(req.baseUrl + "/update/" + req.params.id);
     console.log(req.body);
   }catch(err){
+		console.log(err);
     console.log("Error when try to add a course");
 		if (global.workMode == "HTML") {
 		res.sendStatus(404);
