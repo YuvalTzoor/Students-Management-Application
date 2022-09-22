@@ -173,31 +173,30 @@ async function processLineByLine(file_name) {
 				async function run() {
 					saveas = params[3];
 					const the_doc_id = internal_storage[saveas]._id;
-						console.log("run");
-						let reply;
-						reply = await httpJSONRequest(
-							"post",
-							`http://localhost:8080/student/update/:id`,
-							params[1]
-						);
-						//returning the student id of the got just got created and also saving the object into the
-						//internal_storage variable for future uses
-						
-						internal_storage[saveas] = result[0];
-						console.log(internal_storage[saveas] + "saveas");
-						//for testing!
-						// //const the_doc_id = internal_storage[saveas]._id;
-						// console.log("the_doc_id: " + the_doc_id);
-						// console.log(internal_storage);
-						}
+					console.log("run");
+					let reply;
+					reply = await httpJSONRequest(
+						"post",
+						`http://localhost:8080/student/update/:id`,
+						params[1]
+					);
+					//returning the student id of the got just got created and also saving the object into the
+					//internal_storage variable for future uses
 
-						console.log(
-							"The reply of the student object that added to the data base:" +
-								JSON.stringify(reply)
-						);
-					}
+					internal_storage[saveas] = result[0];
+					console.log(internal_storage[saveas] + "saveas");
+					//for testing!
+					// //const the_doc_id = internal_storage[saveas]._id;
+					// console.log("the_doc_id: " + the_doc_id);
+					// console.log(internal_storage);
+				}
 
-					console.log(run());
+				console.log(
+					"The reply of the student object that added to the data base:" +
+						JSON.stringify(reply)
+				);
+
+				console.log(run());
 				console.log("update_student");
 
 				break;
