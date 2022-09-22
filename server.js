@@ -31,17 +31,17 @@ if (global.workMode == "JSON") {
 
 // Router middleware
 app.use('/student', student_router);
-app.use('/',async (req,res)=>{
-	const log_model = conn2.model("log_schema", Log.schema);
-	const log = new log_model({
-		method:req.method ,
-		path: req.path,
-		runmode: global.workMode
-	})
-	await log.save();
-	console.log(log);
-	next()
-})
+// app.use('/',async (req,res)=>{
+// 	const log_model = conn2.model("log_schema", Log.schema);
+// 	const log = new log_model({
+// 		method:req.method ,
+// 		path: req.path,
+// 		runmode: global.workMode
+// 	})
+// 	await log.save();
+// 	console.log(log);
+// 	next()
+// })
 
 // PUG connection to the app
 app.set('view engine', 'pug');

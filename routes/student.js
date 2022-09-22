@@ -27,9 +27,9 @@ let addStudentMsg = false;
 async function delete_user (req,res) {
   let id = req.params.id;
   try {
-		
       result = await Student.deleteOne({ _id: id })
-			if(resul.deletedCount !== 1){
+			console.log(result);
+			if(result.deletedCount !== 1){
 				res.send("Could not delete student")
 				return
 			}
@@ -276,6 +276,7 @@ router.post('/update/:id/addcourse',async (req,res)=> {
     res.redirect(req.baseUrl + "/update/" + req.params.id);
     console.log(req.body);
   }catch(err){
+		console.log(err);
     console.log("Error when try to add a course");
 		if (global.workMode == "HTML") {
 		res.sendStatus(404);
