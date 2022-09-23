@@ -108,7 +108,7 @@ router.get("/", async (req, res) => {
 						$gte: [{ $avg: "$courses.grade" }, avg_num],
 					});
 				}
-				const students = await global.Student.find(filter);
+				const students = await Student.find(filter);
 				const JSONrespond = JSON.stringify(students);
 				res.send(JSONrespond);
 				//console.log(bodyObj);
@@ -139,7 +139,7 @@ router.get("/add", async (req, res) => {
 
 //Executing a POST request to add a Student
 router.post("/add", async (req, res) => {
-	const st_model = conn1.model("student_schema", Student.schema);
+	const st_model = global.conn1.model("student_schema", Student.schema);
 	const newStudent = new Student(req.body);
 	const error = newStudent.validateSync();
 	if (error) {
@@ -152,7 +152,8 @@ router.post("/add", async (req, res) => {
 		return;
 	}
 	try {
-		const the_added_student = await newStudent.save();
+		//the next line also saved the student so the student got save twice-ask Dani about that
+		//const the_added_student = await newStudent.save();
 		if (global.workMode == "HTML") {
 			console.log("Successfully stored student");
 			obj.id = "";
@@ -167,7 +168,7 @@ router.post("/add", async (req, res) => {
 			res.redirect(req.baseUrl + "/add");
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for adding student");
-			const st_model = conn1.model("student_schema", Student.schema);
+			const st_model = global.conn1.model("student_schema", Student.schema);
 			const newStudent = await st_model.create(await req.body);
 			console.log("Student added successfully");
 
