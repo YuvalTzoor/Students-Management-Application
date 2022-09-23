@@ -4,7 +4,7 @@ and will keep the data of the added student and will not clean the parameters fr
 2)Form table colons location fix(there is a screenshot of the issue).-fixed
 3)update student don't work-fixed
 4)adding a course don't work-fixed
-5)academylog collection in academy getting created without a reason
+5)academylog collection in academy getting created without a reason.
 6)Saving logs at all the endpoints-not working
 
 Added-
@@ -13,8 +13,8 @@ Added-
 
 Needs to get Added-
 1)JSON and HTML endpoints for illegal paths-added.
-2)Confirmation before delete student
-3)adding html about courses for 5 numbers only
+2)Confirmation before delete student.
+3)adding courses in html mode-require for entering 5 digit number as the ID for the course.
 
 Needs to validate-
 1)See if JSON mode can handel the errors!
