@@ -1,14 +1,9 @@
 
 
 
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
-add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded2"} saveas st2
-
-get_students {"toar":"ba"} 
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded1"} saveas st1
+sadd_stud ent {"id":"205541600","toar":"ba","city":"RG","name":"oded2"} saveas st2
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded 3"} saveas st3
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded4"} saveas st4
+get_students {"toar":"ba"} expected_saveas_names ["st1","st4"]
 

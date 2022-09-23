@@ -180,7 +180,7 @@ async function processLineByLine(file_name) {
 					result = JSON.parse(result);
 					const data = reply;
 					//the array that will have the students documents ids for the response for the client
-					//const ID_array_to_return = [];
+					// const ID_array_to_return = [];
 					//printing the data of all returned students
 					data.forEach((obj) => {
 						Object.entries(obj).forEach(([key, value]) => {
@@ -189,48 +189,87 @@ async function processLineByLine(file_name) {
 							}
 							//console.log(`key:${key}  value: ${value}`);
 						});
-						console.log("-------------------");
+						//console.log("-------------------");
 						saveas_get_students = params[3];
 						if (params.length > 2) {
 							saveas_get_students = JSON.parse(saveas_get_students);
-							console.log(saveas_get_students);
+							//console.log(saveas_get_students);
 						}
 
 						//counting the number of returned students objects for comparison
 					});
-					ID_array_to_return.forEach((id) => {
-						console.log(id + "id");
-					});
-					if (objectLength(saveas_get_students) == ID_array_to_return.length) {
+					var client_validity = true;
+					// ID_array_to_return.forEach((id) => {
+					// 	console.log(id + " id");
+					// });
+					//if expected_num_documents is given then compare the number of returned students with the expected number
+					if (
+						params[2] == "expected_num_documents" &&
+						objectLength(saveas_get_students) == ID_array_to_return.length
+					) {
 						console.log("The number of returned students is correct");
-						saveas_get_students.forEach((saveas_name, index) => {
-							internal_storage[saveas_name] = ID_array_to_return[index];
-						});
-						console.log(internal_storage + "internal_storage");
-					} else {
+						client_validity = false;
+					} else if (
+						params[2] == "expected_num_documents" &&
+						objectLength(saveas_get_students) != ID_array_to_return.length
+					) {
 						console.log("The number of returned students is not correct");
+						client_validity = false;
 					}
+					var internal_storage_Id = [];
+					console.log(saveas_get_students + " saveas_get_students");
+					//if expected_saveas_names is given then compare the returned students with the expected names
 					if (params[2] == "expected_saveas_names") {
-						//saving the id of the student in the another variable for testing purposes
-
-						//saving the data of the students inside the internal_storage
-						//according to the saveas name
-						// for (i = 0; i < params.length; i++) {
-						// 	if (i > 2) {
-						// 		saveas = params[i];
-						// 		console.log(saveas+"saveas");
-						// 		internal_storage[saveas] = data[i - 3];
-						// 	}
-						// }
-						console.log(internal_storage);
+						saveas_get_students.forEach((saveas_name) => {
+							console.log(saveas_name + " saveas_name");
+							//internal_storage[saveas_name] = ID_array_to_return[index];
+							try {
+								internal_storage_Id.push(internal_storage[saveas_name]._id);
+							} catch (err) {
+								console.log("The saveas name is not valid");
+								client_validity = false;
+							}
+							// console.log(internal_storage[saveas_name]);
+							// console.log(ID_array_to_return[index]);
+							//console.log(internal_storage_Id + "internal_storage_Id");
+						});
+						console.log(internal_storage_Id + "internal_storage_id");
+						function compareArrays(arr1, arr2) {
+							if (arr1.length !== arr2.length) return (client_validity = false);
+							for (var i = 0; i < arr1.length; i++) {
+								if (arr1[i] !== arr2[i]) return (client_validity = false);
+							}
+						}
+						if (compareArrays(internal_storage_Id, ID_array_to_return)) {
+							console.log("The returned students are correct");
+						}
 					}
+					//console.log(internal_storage_Id[0] + "internal_storage _id");
+					//saving the id of the student in the another variable for testing purposes
+
+					//saving the data of the students inside the internal_storage
+					//according to the saveas name
+					// for (i = 0; i < params.length; i++) {
+					// 	if (i > 2) {
+					// 		saveas = params[i];
+					// 		console.log(saveas+"saveas");
+					// 		internal_storage[saveas] = data[i - 3];
+					// 	}
+					// }
+					//console.log(internal_storage);
+
 					console.log(result.length);
 
 					console.log(
 						"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
 							ID_array_to_return +
-							"ID_array_to_return"
+							"\n\n"
 					);
+					if (client_validity) {
+						console.log("The replay from the server is valid");
+					} else if (!client_validity) {
+						console.log("The replay from the server is invalid");
+					}
 				}
 
 				//console.log(run());
