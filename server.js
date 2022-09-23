@@ -1,6 +1,5 @@
 global.workMode = "";
 let tempWmode = process.argv[2];
-//let log_model = "";
 console.log("workMode is " + tempWmode);
 const Log = require("./models/log_model");
 const express = require("express");
@@ -31,46 +30,18 @@ if (global.workMode == "JSON") {
 }
 
 // Router middleware
-
-// app.use("/", async function my_log(req, res, next) {
-// 	log_model = global.conn2.model("log_schema", Log.schema);
-// 	try {
-// 		const log = new log_model({
-// 			method: req.method,
-// 			path: req.path,
-// 			runmode: global.workMode,
-// 		});
-// 		console.log("log");
-// 		await log.save();
-// 		console.log(log);
-// 		next();
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// });
-app.use('/',async (req,res,next)=>{
+app.use("/", async (req, res, next) => {
 	const log_model = conn2.model("log_schema", Log.schema);
 	const log = new log_model({
-		method:req.method ,
+		method: req.method,
 		path: req.path,
-		runmode: global.workMode
-	})
+		runmode: global.workMode,
+	});
 	await log.save();
 	console.log(log);
-	next()
-})
+	next();
+});
 app.use("/student", student_router);
-// app.use('/',async (req,res)=>{
-// 	const log_model = conn2.model("log_schema", Log.schema);
-// 	const log = new log_model({
-// 		method:req.method ,
-// 		path: req.path,
-// 		runmode: global.workMode
-// 	})
-// 	await log.save();
-// 	console.log(log);
-// 	next()
-// })
 
 // PUG connection to the app
 app.set("view engine", "pug");

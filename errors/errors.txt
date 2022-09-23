@@ -5,7 +5,7 @@ and will keep the data of the added student and will not clean the parameters fr
 3)update student don't work-fixed
 4)adding a course don't work-fixed
 5)academylog collection in academy getting created without a reason.
-6)Saving logs at all the endpoints-not working
+6)Saving logs at all the endpoints-fixed
 
 Added-
 1)redirect after deleting the student-fixed
