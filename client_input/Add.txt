@@ -1,7 +1,14 @@
-get_students {"city":"RG","avg":80} expected_num_documents 3
 
 
-add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded"} saveas st1
 
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded2"} saveas st2
+add_student {"id":"205541600","toar":"ma","city":"RG","name":"oded1"} saveas st1
+add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded2"} saveas st2
 
-update_student st1 {"toar":"phd"}
+get_students {"toar":"ba"} 
+

@@ -83,7 +83,7 @@ router.get("/", async (req, res) => {
 				baseUrl: req.baseUrl,
 			});
 		} else if (global.workMode == "JSON") {
-			console.log("JSON mode for adding student");
+			console.log("JSON mode for getting student");
 			try {
 				const filter = {
 					$expr: { $and: [] },
@@ -110,6 +110,7 @@ router.get("/", async (req, res) => {
 				}
 				const students = await Student.find(filter);
 				const JSONrespond = JSON.stringify(students);
+				console.log(JSONrespond + "\n");
 				res.send(JSONrespond);
 				//console.log(bodyObj);
 			} catch {
@@ -170,7 +171,6 @@ router.post("/add", async (req, res) => {
 			console.log("JSON mode for adding student");
 			const st_model = global.conn1.model("student_schema", Student.schema);
 			const newStudent = await st_model.create(await req.body);
-			console.log("Student added successfully");
 
 			const stu_added_obj = await st_model
 				.find({
@@ -179,6 +179,7 @@ router.post("/add", async (req, res) => {
 				.exec();
 			console.log(stu_added_obj);
 			console.log(stu_added_obj[0]._id + "_identifier");
+			console.log("Student added successfully");
 			res.send(JSON.stringify(stu_added_obj));
 		}
 	} catch (err) {

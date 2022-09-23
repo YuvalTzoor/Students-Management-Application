@@ -6,6 +6,7 @@ and will keep the data of the added student and will not clean the parameters fr
 4)adding a course don't work-fixed
 5)academylog collection in academy getting created without a reason.
 6)Saving logs at all the endpoints-fixed
+7)getting students happened before adding students-fixed
 
 Added-
 1)redirect after deleting the student-fixed
@@ -18,6 +19,7 @@ Needs to get Added-
 
 Needs to validate-
 1)See if JSON mode can handel the errors!
+2)Check if putting the same savas parameter is possible
 
 optional-
 1)close the client connection after it has been done.
