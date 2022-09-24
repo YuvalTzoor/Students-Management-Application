@@ -8,7 +8,9 @@ and will keep the data of the added student and will not clean the parameters fr
 6)Saving logs at all the endpoints-fixed
 7)getting students happened before adding students-fixed
 8)need to check error messages that getting send to the html and json modes
-9)making log creation for /favicon.ico to be disabled-fixed 
+9)making log creation for /favicon.ico to be disabled-fixed
+10)del_student JSON endpoint not working.
+11)need to find how to retrieve the saveas from the internal storage(seems to be fixed just need to make sure with test cases)
 
 Added-
 1)redirect after deleting the student-fixed
@@ -24,4 +26,4 @@ Needs to validate-
 2)Check if putting the same savas parameter is possible
 
 optional-
-1)close the client connection after it has been done.
+1)close the client connection after it has been done-fixed

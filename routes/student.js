@@ -11,7 +11,7 @@ const Log = require("../models/log_model");
 // global.conn2 = mongoose.createConnection("mongodb://localhost/academylog");
 const router = express.Router();
 
-//// Variables Area (need to move to an external file) ////
+//// Utilities Area (need to move to an external file) ////
 
 // Object that holds values for persistence(add form)
 const obj = {
@@ -24,22 +24,23 @@ const obj = {
 let addStudentMsg = false;
 
 //Delete user func
-async function delete_user(req, res) {
-	let id = req.params.id;
-	try {
-		result = await Student.deleteOne({ _id: id });
-		console.log(result);
-		if (result.deletedCount !== 1) {
-			res.send("Could not delete student");
-			return;
-		}
-		setTimeout(() => {
-			res.redirect("http://localhost:8080/student/");
-		}, "100");
-	} catch {
-		res.send("Could not delete student");
-	}
-}
+// async function delete_user(req, res) {
+// 	let id = req.params.id;
+// 	console.log;
+// 	try {
+// 		result = await Student.deleteOne({ _id: id });
+// 		console.log(result);
+// 		if (result.deletedCount !== 1) {
+// 			res.send("Could not delete student");
+// 			return;
+// 		}
+// 		setTimeout(() => {
+// 			res.redirect("http://localhost:8080/student/");
+// 		}, "100");
+// 	} catch {
+// 		res.send("Could not delete student");
+// 	}
+// }
 
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
 router.get("/", async (req, res) => {
@@ -338,7 +339,50 @@ router.post("/update/:id/addcourse", async (req, res) => {
 
 //Executing a POST request to delete a Student
 router.post("/delete/:id", async (req, res) => {
-	delete_user(req, res);
+	if (global.workMode == "HTML") {
+		console.log("Deleting student with id: " + req.params.id);
+		//console.log(req.params);
+		console.log("html mode delete_student");
+		try {
+			let query = req.params.id;
+			result = await Student.deleteOne({ _id: query });
+			console.log(result);
+			if (result.deletedCount !== 1) {
+				res.send("Could not delete student");
+				return;
+			}
+			setTimeout(() => {
+				res.redirect("http://localhost:8080/student/");
+			}, "100");
+		} catch {
+			res.send("Could not delete student");
+		}
+		// console.log(req.params.id);
+		//console.log("test");
+	} else if (global.workMode == "JSON") {
+		console.log(JSON.parse(req.params.id));
+		console.log("json mode delete_student");
+		try {
+			//console.log(JSON.parse(JSON.stringify(req)));
+			let query = req.params.id;
+			console.log(query);
+			function remove_the_colon(str) {
+				return str.substring(1, str.length);
+			}
+			query = remove_the_colon(query);
+			// let id = JSON.stringify(query);
+			console.log(query);
+			result = await Student.deleteOne({ _id: query });
+			console.log(result);
+			if (result.deletedCount !== 1) {
+				console.log("the student got deleted successfully");
+				return res.json(1);
+			}
+		} catch {
+			console.log("Could not delete student");
+			res.json(0);
+		}
+	}
 });
 
 //Executing a POST request to delete all the Students at the DB (JSON only)

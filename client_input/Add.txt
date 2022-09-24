@@ -2,9 +2,13 @@
 
 
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541600","toar":"ba","city":"RG","name":"oded4"} saveas st4
-get_students {"toar":"ba"} expected_saveas_names ["st1","st4"]
+del_student st5
 update_student st1 {"toar":"phd"}
+get_students {"toar":"ba"} expected_saveas_names ["st1","st2"]
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
+update_student st2 {"toar":"phd"}
 add_course st1 {"cid":"35000","grade":85}
-d el_all
+
+
+
 

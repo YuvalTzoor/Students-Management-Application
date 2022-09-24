@@ -181,8 +181,6 @@ async function processLineByLine(file_name) {
 					result = JSON.stringify(reply);
 					result = JSON.parse(result);
 					const data = reply;
-					//the array that will have the students documents ids for the response for the client
-					// const ID_array_to_return = [];
 					//printing the data of all returned students
 					data.forEach((obj) => {
 						Object.entries(obj).forEach(([key, value]) => {
@@ -297,16 +295,17 @@ async function processLineByLine(file_name) {
 
 				async function run() {
 					let client_validity = false;
+					//console.log(internal_storage);
 					try {
-						saveas = params[1];
-						saveas_get_students.forEach((saveas_name) => {
-							if (saveas_name == saveas) {
-								client_validity = true;
-							}
-						});
+						if (internal_storage[params[1]] != undefined)
+							client_validity = true;
+						else {
+							client_validity = false;
+						}
 					} catch (err) {
 						console.log("The saveas name is not valid");
 					}
+
 					// saveas_get_students.forEach((saveas_name) => {
 					// 	if (saveas_name == saveas) {
 					// 		client_validity = true;
@@ -375,15 +374,16 @@ async function processLineByLine(file_name) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
+
 				async function run() {
 					let client_validity = false;
+					//console.log(internal_storage);
 					try {
-						saveas = params[1];
-						saveas_get_students.forEach((saveas_name) => {
-							if (saveas_name == saveas) {
-								client_validity = true;
-							}
-						});
+						if (internal_storage[params[1]] != undefined)
+							client_validity = true;
+						else {
+							client_validity = false;
+						}
 					} catch (err) {
 						console.log("The saveas name is not valid");
 					}
@@ -412,7 +412,8 @@ async function processLineByLine(file_name) {
 				}
 
 				break;
-			}s
+			}
+
 			case "del_student": {
 				try {
 					for (i = 0; i < params.length; i++) {
@@ -426,9 +427,46 @@ async function processLineByLine(file_name) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
-				//const fifthPromise = await run();
+				async function run() {
+					let client_validity = false;
+					//console.log(internal_storage);
+					try {
+						if (internal_storage[params[1]] != undefined)
+							client_validity = true;
+						else {
+							client_validity = false;
+						}
+					} catch (err) {
+						console.log("The saveas name is not valid");
+					}
+
+					if (client_validity) {
+						const the_doc_id = internal_storage[saveas]._id;
+						console.log(the_doc_id);
+						//console.log(JSON.stringify(the_doc_id));
+						let reply;
+						reply = await httpJSONRequest(
+							"post",
+							`http://localhost:8080/student/delete/:${the_doc_id}`,
+							the_doc_id
+						);
+						console.log(
+							"The reply of the student object that got deleted in the data base:" +
+								JSON.stringify(reply)
+						);
+					} else if (!client_validity) {
+						console.log("The saveas name is invalid");
+					}
+				}
+				if (params.length == 2) {
+					const fifthPromise = await run();
+				} else if ((params.length = !2)) {
+					console.log("The number of parameters is not valid");
+				}
+
 				break;
 			}
+
 			case "del_all": {
 				//Checking if the line is valid or not
 				try {
