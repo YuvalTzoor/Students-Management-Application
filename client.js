@@ -326,12 +326,11 @@ async function processLineByLine(file_name) {
 					//console.log(internal_storage_Id + "internal_storage_Id");
 					if (client_validity) {
 						const the_doc_id = internal_storage[saveas]._id;
-						console.log("run");
 						let reply;
 						reply = await httpJSONRequest(
 							"post",
-							`http://localhost:8080/student/update/:id`,
-							the_doc_id
+							`http://localhost:8080/student/update/:${the_doc_id}`,
+							params[2]
 						);
 						console.log(
 							"The reply of the student object that got updated in the data base:" +

@@ -227,16 +227,18 @@ router.post("/update/:id", async (req, res) => {
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for updating student");
 			let query = req.params.id;
-			console.log(query);
+			//console.log(query);
 			const opts = { runValidators: true, new: true };
+			console.log("update");
 			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
 			);
+			console.log("update");
 			let update = await Student.updateOne(st);
-			console.log(update);
-			res(update);
+			console.log("update");
+			res(JSON.stringify(update));
 		}
 	} catch (err) {
 		console.log("Error when try to update the student");
