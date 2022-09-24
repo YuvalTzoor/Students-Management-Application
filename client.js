@@ -412,7 +412,7 @@ async function processLineByLine(file_name) {
 				}
 
 				break;
-			}
+			}s
 			case "del_student": {
 				try {
 					for (i = 0; i < params.length; i++) {

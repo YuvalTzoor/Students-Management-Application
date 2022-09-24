@@ -241,11 +241,11 @@ router.post("/update/:id", async (req, res) => {
 			const opts = { runValidators: true, new: true };
 			console.log("update");
 			console.log(req.body);
-			//var id = mongoose.Types.ObjectId(query);
+			var id = mongoose.Types.ObjectId(query);
 
-			//console.log(id + " _id");
+			console.log(id + " _id");
 			const st = await Student.findOneAndUpdate(
-				{ _id: query },
+				{ _id: id },
 				{ $set: req.body },
 				opts
 			);
