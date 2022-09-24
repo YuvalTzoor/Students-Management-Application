@@ -9,7 +9,9 @@ const Log = require("../models/log_model");
 const router = express.Router();
 
 
-//// Variables Area (need to move to an external file) ////
+//// Utilities Area (need to move to an external file) ////
+
+
 
 // Object that holds values for persistence(add form)
 const obj = {
@@ -20,8 +22,6 @@ const obj = {
 };
 
 let addStudentMsg = false;
-
-
 
 //Delete user func
 async function delete_user (req,res) {
@@ -41,6 +41,8 @@ async function delete_user (req,res) {
       res.send("Could not delete student")
   }
 }
+
+
 
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
 router.get('/',async (req,res)=>{
@@ -85,7 +87,7 @@ router.get('/',async (req,res)=>{
       res.render('main',{
         obj1: students,
         dest: dest,
-        baseUrl: req.baseUrl
+        baseUrl: req.baseUrl,
       });
     }else if(global.workMode == "JSON"){
       console.log("JSON mode for adding student");
@@ -230,7 +232,7 @@ router.post('/update/:id',async (req,res)=> {
 		if (global.workMode == "HTML") {
 			let query = req.params.id;
 			const opts = { runValidators: true, new: true };
-			const st = await global.Student.findOneAndUpdate(
+			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
@@ -241,7 +243,7 @@ router.post('/update/:id',async (req,res)=> {
 		}else if (global.workMode == "JSON"){
 			let query = req.params.id;
 			const opts = { runValidators: true, new: true };
-			const st = await global.Student.findOneAndUpdate(
+			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
@@ -250,7 +252,7 @@ router.post('/update/:id',async (req,res)=> {
 			res(update);
 		}
 	}catch(err){
-		console.log("Error when try to update the student");
+		console.log(err);
 		if (global.workMode == "HTML") {
 		res.sendStatus(404);
 		} else {
@@ -297,7 +299,7 @@ router.post("/deleteall", async (req, res) => {
 		res.send("Failed to delete all students");
 	} else if (global.workMode == "JSON") {
 		try {
-			const students = await global.Student.collection.drop();
+			const students = await Student.collection.drop();
 			const log_model = conn2.model("log_schema", Log.schema);
 			const log = new log_model({
 				action: "del_all",

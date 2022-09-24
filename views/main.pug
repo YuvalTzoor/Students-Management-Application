@@ -1,3 +1,5 @@
+
+
 doctype
 html
  head 
@@ -40,7 +42,7 @@ html
               td=item.id 
               td=item.name 
               td
-                form(action=baseUrl+"/delete/"+item._id method="POST") 
+                form(action=baseUrl+"/delete/"+item._id method="POST" onSubmit="return confirm('Are you sure you want to delete?')") 
                   input.table-btn(type="submit" value="delete")
               td
                 button.table-btn
