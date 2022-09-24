@@ -2,7 +2,10 @@ const express = require("express");
 const path = require("path");
 const { default: mongoose } = require("mongoose");
 const Student = require("../models/student_model");
+
 // global.Student = require("../models/student_model");
+const st_model = global.conn1.model("student_schema", Student.schema);
+
 const Log = require("../models/log_model");
 // global.conn1 = mongoose.createConnection("mongodb://localhost/academy");
 // global.conn2 = mongoose.createConnection("mongodb://localhost/academylog");
@@ -140,7 +143,7 @@ router.get("/add", async (req, res) => {
 
 //Executing a POST request to add a Student
 router.post("/add", async (req, res) => {
-	const st_model = global.conn1.model("student_schema", Student.schema);
+	//const st_model = global.conn1.model("student_schema", Student.schema);
 	const newStudent = new Student(req.body);
 	const error = newStudent.validateSync();
 	if (error) {
@@ -169,7 +172,7 @@ router.post("/add", async (req, res) => {
 			res.redirect(req.baseUrl + "/add");
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for adding student");
-			const st_model = global.conn1.model("student_schema", Student.schema);
+			//const st_model = global.conn1.model("student_schema", Student.schema);
 			const newStudent = await st_model.create(await req.body);
 
 			const stu_added_obj = await st_model
@@ -212,35 +215,63 @@ router.get("/update/:id", async (req, res) => {
 
 //Updating the student details via POST request
 router.post("/update/:id", async (req, res) => {
+	//const newStudent = new Student(newStudent);
 	try {
 		if (global.workMode == "HTML") {
 			let query = req.params.id;
+			console.log("Updating student with id: " + query);
 			const opts = { runValidators: true, new: true };
 			const st = await Student.findOneAndUpdate(
 				{ _id: query },
 				{ $set: req.body },
 				opts
 			);
+			console.log(st);
 			// let update = await global.Student.updateOne(st);
 			res.redirect(req.baseUrl + "/update/" + req.params.id);
 			console.log(req.body);
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for updating student");
 			let query = req.params.id;
-			//console.log(query);
+			function remove_the_colon(str) {
+				return str.substring(1, str.length);
+			}
+			query = remove_the_colon(query);
+			console.log(query);
 			const opts = { runValidators: true, new: true };
 			console.log("update");
+			console.log(req.body);
+			var id = mongoose.Types.ObjectId(query);
+
+			console.log(id + " _id");
 			const st = await Student.findOneAndUpdate(
-				{ _id: query },
+				{ _id: id },
 				{ $set: req.body },
 				opts
 			);
-			console.log("update");
-			let update = await Student.updateOne(st);
-			console.log("update");
-			res(JSON.stringify(update));
+			console.log(st);
+			// const st = await Student.find({
+			// 	_id: id,
+			// })
+			// 	// }).updateOne(req.body)
+			// 	.exec();
+
+			// // }).updateOne(req.body)
+
+			// console.log(st + "st");
+			// // const st = await Student.findOneAndUpdate(
+			// // 	{ _id: query },
+			// // 	{ $set: JSON.parse(req.body) },
+			// // 	opts
+			// // );
+			// //console.log("update");
+			// //let update = await Student.updateOne(st);
+			// console.log("update");
+			console.log("student got update successfully");
+			res.json(st);
 		}
 	} catch (err) {
+		console.log(err);
 		console.log("Error when try to update the student");
 		if (global.workMode == "HTML") {
 			// res.sendStatus(404);
