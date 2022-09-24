@@ -225,7 +225,9 @@ router.post("/update/:id", async (req, res) => {
 			res.redirect(req.baseUrl + "/update/" + req.params.id);
 			console.log(req.body);
 		} else if (global.workMode == "JSON") {
+			console.log("JSON mode for updating student");
 			let query = req.params.id;
+			console.log(query);
 			const opts = { runValidators: true, new: true };
 			const st = await Student.findOneAndUpdate(
 				{ _id: query },
@@ -233,12 +235,14 @@ router.post("/update/:id", async (req, res) => {
 				opts
 			);
 			let update = await Student.updateOne(st);
+			console.log(update);
 			res(update);
 		}
 	} catch (err) {
 		console.log("Error when try to update the student");
 		if (global.workMode == "HTML") {
-			res.sendStatus(404);
+			// res.sendStatus(404);
+			res.send("Update failed");
 		} else {
 			res.json("FAILED");
 		}

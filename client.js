@@ -13,6 +13,8 @@ let expected_saveas_names = "";
 var go_to_next_command;
 let result = "";
 var ID_array_to_return = [];
+var saveas_get_students = [];
+var internal_storage_Id = [];
 // const conn1 = (global.conn1 = mongoose.createConnection(
 // 	"mongodb://localhost/academy"
 // ));
@@ -173,7 +175,7 @@ async function processLineByLine(file_name) {
 				console.log(url);
 				async function run() {
 					let reply = "";
-					let saveas_get_students = [];
+					//let saveas_get_students = [];
 					reply = await httpJSONRequest("get", url);
 					//returning the student id ooj that got just got created for testing purposes
 					result = JSON.stringify(reply);
@@ -216,12 +218,12 @@ async function processLineByLine(file_name) {
 						console.log("The number of returned students is not correct");
 						client_validity = false;
 					}
-					var internal_storage_Id = [];
-					console.log(saveas_get_students + " saveas_get_students");
+					//var internal_storage_Id = [];
+					//console.log(saveas_get_students + " saveas_get_students");
 					//if expected_saveas_names is given then compare the returned students with the expected names
 					if (params[2] == "expected_saveas_names") {
 						saveas_get_students.forEach((saveas_name) => {
-							console.log(saveas_name + " saveas_name");
+							//console.log(saveas_name + " saveas_name");
 							//internal_storage[saveas_name] = ID_array_to_return[index];
 							try {
 								internal_storage_Id.push(internal_storage[saveas_name]._id);
@@ -263,12 +265,13 @@ async function processLineByLine(file_name) {
 					console.log(
 						"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
 							ID_array_to_return +
-							"\n\n"
+							"\n" +
+							"and the validity of the client is: "
 					);
 					if (client_validity) {
-						console.log("The replay from the server is valid");
+						console.log("The replay from the server is valid" + "\n\n");
 					} else if (!client_validity) {
-						console.log("The replay from the server is invalid");
+						console.log("The replay from the server is invalid" + "\n\n");
 					}
 				}
 
@@ -291,33 +294,72 @@ async function processLineByLine(file_name) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
+
 				async function run() {
-					saveas = params[3];
-					const the_doc_id = internal_storage[saveas]._id;
-					console.log("run");
-					let reply;
-					reply = await httpJSONRequest(
-						"post",
-						`http://localhost:8080/student/update/:id`,
-						params[1]
-					);
+					let client_validity = false;
+					try {
+						saveas = params[1];
+						saveas_get_students.forEach((saveas_name) => {
+							if (saveas_name == saveas) {
+								client_validity = true;
+							}
+						});
+					} catch (err) {
+						console.log("The saveas name is not valid");
+					}
+					// saveas_get_students.forEach((saveas_name) => {
+					// 	if (saveas_name == saveas) {
+					// 		client_validity = true;
+					// 	}
+					// });
+
+					//console.log(saveas_name + " saveas_name");
+					//internal_storage[saveas_name] = ID_array_to_return[index];
+					// try {
+					// 	internal_storage_Id.push(internal_storage[saveas_name]._id);
+					// } catch (err) {
+					// 	console.log("The saveas name is not valid");
+					// 	client_validity = false;
+					// }
+					// console.log(internal_storage[saveas_name]);
+					// console.log(ID_array_to_return[index]);
+					//console.log(internal_storage_Id + "internal_storage_Id");
+					if (client_validity) {
+						const the_doc_id = internal_storage[saveas]._id;
+						console.log("run");
+						let reply;
+						reply = await httpJSONRequest(
+							"post",
+							`http://localhost:8080/student/update/:id`,
+							the_doc_id
+						);
+						console.log(
+							"The reply of the student object that got updated in the data base:" +
+								JSON.stringify(reply)
+						);
+					} else if (!client_validity) {
+						console.log("The saveas name is invalid");
+					}
 					//returning the student id of the got just got created and also saving the object into the
 					//internal_storage variable for future uses
 
-					internal_storage[saveas] = result[0];
-					console.log(internal_storage[saveas] + "saveas");
+					// internal_storage[saveas] = result[0];
+					// console.log(internal_storage[saveas] + "saveas");
 					//for testing!
 					// //const the_doc_id = internal_storage[saveas]._id;
 					// console.log("the_doc_id: " + the_doc_id);
 					// console.log(internal_storage);
+					// console.log(
+					// 	"The reply of the student object that got updated in the data base:" +
+					// 		JSON.stringify(reply)
+					// );
 				}
 
-				console.log(
-					"The reply of the student object that added to the data base:" +
-						JSON.stringify(reply)
-				);
-
-				const thirdPromise = await run();
+				if (params.length == 3) {
+					const thirdPromise = await run();
+				} else if (params.length != 4) {
+					console.log("The number of parameters is not valid");
+				}
 
 				break;
 			}
