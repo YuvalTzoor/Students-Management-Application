@@ -356,7 +356,7 @@ async function processLineByLine(file_name) {
 
 				if (params.length == 3) {
 					const thirdPromise = await run();
-				} else if (params.length != 4) {
+				} else if (params.length > 3) {
 					console.log("The number of parameters is not valid");
 				}
 
@@ -375,7 +375,42 @@ async function processLineByLine(file_name) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
-				//const forthPromise = await run();
+				async function run() {
+					let client_validity = false;
+					try {
+						saveas = params[1];
+						saveas_get_students.forEach((saveas_name) => {
+							if (saveas_name == saveas) {
+								client_validity = true;
+							}
+						});
+					} catch (err) {
+						console.log("The saveas name is not valid");
+					}
+
+					if (client_validity) {
+						const the_doc_id = internal_storage[saveas]._id;
+						let reply;
+						reply = await httpJSONRequest(
+							"post",
+							`http://localhost:8080/student/update/:${the_doc_id}/addcourse`,
+							params[2]
+						);
+						console.log(
+							"The reply of the student object that got course added in the data base:" +
+								JSON.stringify(reply)
+						);
+					} else if (!client_validity) {
+						console.log("The saveas name is invalid");
+					}
+				}
+				console.log(params.length);
+				if (params.length == 3) {
+					const forthPromise = await run();
+				} else if (params.length > 3) {
+					console.log("The number of parameters is not valid");
+				}
+
 				break;
 			}
 			case "del_student": {

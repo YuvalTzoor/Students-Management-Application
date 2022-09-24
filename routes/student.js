@@ -241,11 +241,11 @@ router.post("/update/:id", async (req, res) => {
 			const opts = { runValidators: true, new: true };
 			console.log("update");
 			console.log(req.body);
-			var id = mongoose.Types.ObjectId(query);
+			//var id = mongoose.Types.ObjectId(query);
 
-			console.log(id + " _id");
+			//console.log(id + " _id");
 			const st = await Student.findOneAndUpdate(
-				{ _id: id },
+				{ _id: query },
 				{ $set: req.body },
 				opts
 			);
@@ -285,21 +285,46 @@ router.post("/update/:id", async (req, res) => {
 //Adding a course to the student's object via POST request
 router.post("/update/:id/addcourse", async (req, res) => {
 	try {
-		const opts = { runValidators: true, new: true };
-		let query = req.params.id;
-		let update = await Student.findOneAndUpdate(
-			{
-				_id: query,
-			},
-			{
-				$push: {
-					courses: { cid: req.body.cid, grade: req.body.grade },
+		if (global.workMode == "HTML") {
+			console.log("HTML mode for adding course to student");
+			const opts = { runValidators: true, new: true };
+			let query = req.params.id;
+			let st = await Student.findOneAndUpdate(
+				{
+					_id: query,
 				},
-			},
-			opts
-		);
-		res.redirect(req.baseUrl + "/update/" + req.params.id);
-		console.log(req.body);
+				{
+					$push: {
+						courses: { cid: req.body.cid, grade: req.body.grade },
+					},
+				},
+				opts
+			);
+			res.redirect(req.baseUrl + "/update/" + req.params.id);
+			console.log(req.body);
+		} else if (global.workMode == "JSON") {
+			console.log("JSON mode for adding course to student");
+			const opts = { runValidators: true, new: true };
+			let query = req.params.id;
+			function remove_the_colon(str) {
+				return str.substring(1, str.length);
+			}
+			query = remove_the_colon(query);
+			console.log(query);
+			let st = await Student.findOneAndUpdate(
+				{
+					_id: query,
+				},
+				{
+					$push: {
+						courses: { cid: req.body.cid, grade: req.body.grade },
+					},
+				},
+				opts
+			);
+			console.log("course added to student successfully");
+			res.json(st);
+		}
 	} catch (err) {
 		console.log(err);
 		console.log("Error when try to add a course");
