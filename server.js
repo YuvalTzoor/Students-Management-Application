@@ -37,7 +37,9 @@ app.use("/", async (req, res, next) => {
 		path: req.path,
 		runmode: global.workMode,
 	});
-	await log.save();
+	if (path != "/favicon.ico") {
+		await log.save();
+	}
 	console.log(log);
 	next();
 });

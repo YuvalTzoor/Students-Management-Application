@@ -291,7 +291,7 @@ router.post("/deleteall", async (req, res) => {
 		res.send("Failed to delete all students");
 	} else if (global.workMode == "JSON") {
 		try {
-			const students = await global.Student.collection.drop();
+			const students = await Student.collection.drop();
 			res.json("OK");
 			console.log("All students deleted successfully");
 		} catch (err) {

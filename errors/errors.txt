@@ -4,9 +4,11 @@ and will keep the data of the added student and will not clean the parameters fr
 2)Form table colons location fix(there is a screenshot of the issue).-fixed
 3)update student don't work-fixed
 4)adding a course don't work-fixed
-5)academylog collection in academy getting created without a reason.
+5)academylog collection in academy getting created without a reason-seems that it got fixed
 6)Saving logs at all the endpoints-fixed
 7)getting students happened before adding students-fixed
+8)need to check error messages that getting send to the html and json modes
+9)making log creation for /favicon.ico to be disabled-fixed 
 
 Added-
 1)redirect after deleting the student-fixed
