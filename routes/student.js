@@ -342,12 +342,14 @@ router.post("/update/:id/addcourse", async (req, res) => {
 
 //Executing a POST request to delete a Student
 router.post("/delete/:id", async (req, res) => {
+	let query = req.params.id;
 	if (global.workMode == "HTML") {
 		console.log("Deleting student with id: " + req.params.id);
+		//let query = req.params.id;
 		//console.log(req.params);
 		console.log("html mode delete_student");
 		try {
-			let query = req.params.id;
+			//let query = req.params.id;
 			result = await Student.deleteOne({ _id: query });
 			console.log(result);
 			if (result.deletedCount !== 1) {
@@ -367,7 +369,7 @@ router.post("/delete/:id", async (req, res) => {
 		console.log("json mode delete_student");
 		try {
 			//console.log(JSON.parse(JSON.stringify(req)));
-			let query = req.params.id;
+			//let query = req.params.id;
 			//console.log(query);
 			function remove_the_colon(str) {
 				return str.substring(1, str.length);
