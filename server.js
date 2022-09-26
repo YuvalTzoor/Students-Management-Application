@@ -17,7 +17,10 @@ const student_router = require("./routes/student");
 
 // Static middleware
 app.use(express.static(path.join(__dirname, "public")));
-
+if (tempWmode != "--json" && tempWmode != "--html") {
+	console.log("Invalid work mode");
+	process.exit(0);
+}
 if (tempWmode == "--json") {
 	global.workMode = "JSON";
 } else {
@@ -39,8 +42,8 @@ app.use("/", async (req, res, next) => {
 	});
 	if (path != "/favicon.ico") {
 		await log.save();
+		console.log(log);
 	}
-	console.log(log);
 	next();
 });
 app.use("/student", student_router);

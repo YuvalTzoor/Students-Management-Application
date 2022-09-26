@@ -448,8 +448,7 @@ async function processLineByLine(file_name) {
 						let reply;
 						reply = await httpJSONRequest(
 							"post",
-							`http://localhost:8080/student/delete/:${the_doc_id}`,
-							the_doc_id
+							`http://localhost:8080/student/delete/:${the_doc_id}`
 						);
 						console.log(
 							"The reply of the student object that got deleted in the data base:" +

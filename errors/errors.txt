@@ -12,6 +12,7 @@ and will keep the data of the added student and will not clean the parameters fr
 10)del_student JSON endpoint not working.
 11)need to find how to retrieve the saveas from the internal storage(seems to be fixed just need to make sure with test cases)
 12)expected_num_documents is not working-fixed
+13)favicon log is appres and we sould prevent it
 
 Added-
 1)redirect after deleting the student-fixed
@@ -28,3 +29,10 @@ Needs to validate-
 
 optional-
 1)close the client connection after it has been done-fixed
+
+
+1)get students-/ json and html
+
+2)add students -json html
+
+3)update_student

@@ -1,7 +1,3 @@
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
-add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st3
-
-get_students {"city":"RG","toar":"ba"} expected_num_documents 3
-
-
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded2"} saveas st2
+del_student st1

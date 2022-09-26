@@ -157,7 +157,9 @@ router.post("/add", async (req, res) => {
 		return;
 	}
 	try {
+		const the_added_student = await newStudent.save();
 		//the next line also saved the student so the student got save twice-ask Dani about that
+		//const newStudent = await st_model.create(await req.body);
 		//const the_added_student = await newStudent.save();
 		if (global.workMode == "HTML") {
 			console.log("Successfully stored student");
@@ -174,7 +176,7 @@ router.post("/add", async (req, res) => {
 		} else if (global.workMode == "JSON") {
 			console.log("JSON mode for adding student");
 			//const st_model = global.conn1.model("student_schema", Student.schema);
-			const newStudent = await st_model.create(await req.body);
+			//const newStudent = await st_model.create(await req.body);
 
 			const stu_added_obj = await st_model
 				.find({
@@ -366,7 +368,7 @@ router.post("/delete/:id", async (req, res) => {
 		try {
 			//console.log(JSON.parse(JSON.stringify(req)));
 			let query = req.params.id;
-			console.log(query);
+			//console.log(query);
 			function remove_the_colon(str) {
 				return str.substring(1, str.length);
 			}
@@ -375,7 +377,7 @@ router.post("/delete/:id", async (req, res) => {
 			console.log(query);
 			result = await Student.deleteOne({ _id: query });
 			console.log(result);
-			if (result.deletedCount !== 1) {
+			if (result.deletedCount === 1) {
 				console.log("the student got deleted successfully");
 				return res.json(1);
 			}

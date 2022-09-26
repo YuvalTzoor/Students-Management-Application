@@ -9,3 +9,8 @@ add_course st1 {"cid":"35000","grade":85}
 
 
 
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
+add_course st1 {"cid":"35000","grade":85}
+
+
+update_student st1 {"toar":"phd"}
