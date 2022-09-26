@@ -237,6 +237,7 @@ router.post("/update/:id", async (req, res) => {
 			function remove_the_colon(str) {
 				return str.substring(1, str.length);
 			}
+			//205541601
 			query = remove_the_colon(query);
 			console.log(query);
 			const opts = { runValidators: true, new: true };
@@ -360,7 +361,7 @@ router.post("/delete/:id", async (req, res) => {
 		// console.log(req.params.id);
 		//console.log("test");
 	} else if (global.workMode == "JSON") {
-		console.log(JSON.parse(req.params.id));
+		//console.log(JSON.parse(req.params.id));
 		console.log("json mode delete_student");
 		try {
 			//console.log(JSON.parse(JSON.stringify(req)));
