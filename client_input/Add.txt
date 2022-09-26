@@ -1,5 +1,7 @@
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-update_student st1 {"toar":"phd"}
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st3
 
+get_students {"city":"RG","toar":"ba"} expected_num_documents 3
 
 

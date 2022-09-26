@@ -203,15 +203,16 @@ async function processLineByLine(file_name) {
 					// 	console.log(id + " id");
 					// });
 					//if expected_num_documents is given then compare the number of returned students with the expected number
+					//console.log(objectLength(saveas_get_students));
 					if (
 						params[2] == "expected_num_documents" &&
-						objectLength(saveas_get_students) == ID_array_to_return.length
+						params[3] == ID_array_to_return.length
 					) {
 						console.log("The number of returned students is correct");
-						client_validity = false;
+						client_validity = true;
 					} else if (
 						params[2] == "expected_num_documents" &&
-						objectLength(saveas_get_students) != ID_array_to_return.length
+						params[3] != ID_array_to_return.length
 					) {
 						console.log("The number of returned students is not correct");
 						client_validity = false;
