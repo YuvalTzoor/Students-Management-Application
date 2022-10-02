@@ -41,7 +41,7 @@ html
           form(action=baseUrl+"/update/"+id+"/addcourse" method="POST") 
             div.course-form-input
               label(for="courseId") Course id: 
-              input(type="text"  id="courseId" name="cid" value="" required) 
+              input(type="text"  id="courseId" name="cid" value="" minlength="5" maxlength="5" required) 
             div.course-form-input   
               label(for="grade") Grade: 
               input(type="number" min="0" max="100" id="grade" name="grade" value="" required)

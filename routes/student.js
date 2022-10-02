@@ -2,16 +2,9 @@ const express = require('express');
 const path = require('path')
 const { default: mongoose } = require('mongoose');
 const Student = require('../models/student_model')
-// global.Student = require("../models/student_model");
-const Log = require("../models/log_model");
-// global.conn1 = mongoose.createConnection("mongodb://localhost/academy");
-// global.conn2 = mongoose.createConnection("mongodb://localhost/academylog");
 const router = express.Router();
 
-
 //// Utilities Area (need to move to an external file) ////
-
-
 
 // Object that holds values for persistence(add form)
 const obj = {
@@ -41,7 +34,6 @@ async function delete_user (req,res) {
       res.send("Could not delete student")
   }
 }
-
 
 
 //Loading an HTML DIV - containing a list of registered students with a filtering feature.
@@ -90,7 +82,7 @@ router.get('/',async (req,res)=>{
         baseUrl: req.baseUrl,
       });
     }else if(global.workMode == "JSON"){
-      console.log("JSON mode for adding student");
+      console.log("JSON mode for getting students");
 			try {
 				const filter = {
 					$expr: { $and: [] },
@@ -115,7 +107,7 @@ router.get('/',async (req,res)=>{
 						$gte: [{ $avg: "$courses.grade" }, avg_num],
 					});
 				}
-				const students = await global.Student.find(filter);
+				const students = await Student.find(filter);
 				const JSONrespond = JSON.stringify(students);
 				res.send(JSONrespond);
 				//console.log(bodyObj);
@@ -146,7 +138,7 @@ router.get('/add',async (req,res)=>{
 
 //Executing a POST request to add a Student
 router.post('/add', async (req,res)=>{
-	const st_model = conn1.model("student_schema", Student.schema);
+	// const st_model = conn1.model("student_schema", Student.schema);
 	const newStudent = new Student(req.body);
 	const error = newStudent.validateSync();
 	if (error) {
@@ -174,29 +166,18 @@ router.post('/add', async (req,res)=>{
 			addStudentMsg = true;
       res.redirect(req.baseUrl + "/add");
     }else if (global.workMode == "JSON"){
-				console.log("JSON mode for adding student");
-				const st_model = conn1.model("student_schema", Student.schema);
-				const newStudent = await st_model.create(await req.body);
-				console.log("Student added successfully");
-
-				const stu_added_obj = await st_model
+				// console.log("JSON mode for adding student");
+				// const st_model = conn1.model("student_schema", Student.schema);
+				// const newStudent = await st_model.create(await req.body);
+				const stu_added_obj = await Student
 					.find({
 						_id: newStudent._id,
 					})
 					.exec();
 				console.log(stu_added_obj);
 				console.log(stu_added_obj[0]._id + "_identifier");
+				console.log("ROW 183");
 				res.send(JSON.stringify(stu_added_obj));
-				const log_model = conn2.model("log_schema", Log.schema);
-				const log = new log_model({
-					action: "add_student",
-					method: "post",
-					path: "student/add",
-					runmode: "JSON",
-					when: new Date(),
-				});
-				await log.save();
-				console.log("log saved successfully:" + log);
 			}
   }catch(err){
 		console.log("Error when try to add student");
@@ -213,7 +194,6 @@ router.get('/update/:id',async (req,res)=> {
   try{
     const dest = "http://localhost:8080/student/update/";
     const student = await Student.findById(req.params.id)
-
     res.render('update-form',{
       obj1: student,
       id: req.params.id,
@@ -241,15 +221,27 @@ router.post('/update/:id',async (req,res)=> {
 			res.redirect(req.baseUrl + "/update/" + req.params.id);
 			console.log(req.body);
 		}else if (global.workMode == "JSON"){
+			console.log("JSON mode for updating student");
 			let query = req.params.id;
+			function remove_the_colon(str) {
+				return str.substring(1, str.length);
+			}
+			query = remove_the_colon(query);
+			console.log(query);
 			const opts = { runValidators: true, new: true };
+			console.log("update");
+			console.log(req.body);
+			let id = mongoose.Types.ObjectId(query);
+
+			console.log(id + " _id");
 			const st = await Student.findOneAndUpdate(
-				{ _id: query },
+				{ _id: id },
 				{ $set: req.body },
 				opts
 			);
-			let update = await global.Student.updateOne(st);
-			res(update);
+			console.log("student got update successfully");
+			console.log(st);
+			res.json(st);
 		}
 	}catch(err){
 		console.log(err);
@@ -263,34 +255,96 @@ router.post('/update/:id',async (req,res)=> {
 
 //Adding a course to the student's object via POST request
 router.post('/update/:id/addcourse',async (req,res)=> {
-  try{
-		const opts = { runValidators: true, new: true };
-    let query = req.params.id;
-    let update = await Student.findOneAndUpdate({
-      _id:query
-    },{
-      $push: {
-        courses:{cid:req.body.cid,grade:req.body.grade}
-        }
-      },
-			opts
-		);
-    res.redirect(req.baseUrl + "/update/" + req.params.id);
-    console.log(req.body);
-  }catch(err){
-		console.log(err);
-    console.log("Error when try to add a course");
+	try {
 		if (global.workMode == "HTML") {
-		res.sendStatus(404);
-		} else {
-		res.json("FAILED");
+			console.log("HTML mode for adding course to student");
+			const opts = { runValidators: true, new: true };
+			let query = req.params.id;
+			let st = await Student.findOneAndUpdate(
+				{
+					_id: query,
+				},
+				{
+					$push: {
+						courses: { cid: req.body.cid, grade: req.body.grade },
+					},
+				},
+				opts
+			);
+			res.redirect(req.baseUrl + "/update/" + req.params.id);
+			console.log(req.body);
+		} else if (global.workMode == "JSON") {
+			console.log("JSON mode for adding course to student");
+			const opts = { runValidators: true, new: true };
+			let query = req.params.id;
+			function remove_the_colon(str) {
+				return str.substring(1, str.length);
+			}
+			query = remove_the_colon(query);
+			console.log(query);
+			let st = await Student.findOneAndUpdate(
+				{
+					_id: query,
+				},
+				{
+					$push: {
+						courses: { cid: req.body.cid, grade: req.body.grade },
+					},
+				},
+				opts
+			);
+			console.log("course added to student successfully");
+			res.json(st);
 		}
-  }
+	} catch (err) {
+		console.log(err);
+		console.log("Error when try to add a course");
+		if (global.workMode == "HTML") {
+			res.sendStatus(404);
+		} else {
+			res.json("FAILED");
+		}
+	}
 })
 
 //Executing a POST request to delete a Student
 router.post('/delete/:id',async (req,res)=>{
-	delete_user(req,res);
+	//delete_user(req,res);
+	try{
+		if (global.workMode == "HTML") {
+			let query = req.params.id;
+			result = await Student.deleteOne({ _id: query });
+			console.log("Deleting student with id: " + req.params.id);
+			console.log("html mode delete_student");
+			console.log(result);
+			if (result.deletedCount !== 1) {
+				res.send("Could not delete student");
+				return;
+			}
+			setTimeout(() => {
+				res.redirect("http://localhost:8080/student/");
+			}, "100");
+		} else if (global.workMode == "JSON") {
+				let query = req.params.id;
+				console.log("json mode delete_student");
+				function remove_the_colon(str) {
+					return str.substring(1, str.length);
+				}
+			query = remove_the_colon(query);
+			result = await Student.deleteOne({ _id: query });
+			if (result.deletedCount !== 1) {
+				console.log("Could not delete student");
+				return res.json(1);
+			}
+		}
+	}catch{
+		console.log("Could not delete student");
+		if (global.workMode == "HTML") {
+			res.sendStatus(404);
+		} else {
+			res.json(0)
+		}
+	}
 })
 
 //Executing a POST request to delete all the Students at the DB (JSON only)
@@ -300,18 +354,8 @@ router.post("/deleteall", async (req, res) => {
 	} else if (global.workMode == "JSON") {
 		try {
 			const students = await Student.collection.drop();
-			const log_model = conn2.model("log_schema", Log.schema);
-			const log = new log_model({
-				action: "del_all",
-				method: "post",
-				path: "student/deleteall",
-				runmode: "JSON",
-				when: new Date(),
-			});
-			await log.save();
 			res.json("OK");
 			console.log("All students deleted successfully");
-			console.log("log saved successfully");
 		} catch (err) {
 			console.log(err);
 			res.json("FAILED");

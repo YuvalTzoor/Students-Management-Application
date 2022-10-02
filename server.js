@@ -12,12 +12,16 @@ let app = express()
 
 const PORT = 8080;
 
+
 // Import user router
 const student_router = require('./routes/student')
 
 // Static middleware
 app.use(express.static(path.join(__dirname,'public')))
-
+if (tempWmode != "--json" && tempWmode != "--html") {
+	console.log("Invalid work mode");
+	process.exit(0);
+}
 if (tempWmode == "--json") {
 	global.workMode = "JSON";
 } else{
@@ -29,19 +33,24 @@ if (global.workMode == "JSON") {
 	app.use(express.urlencoded({ extended: false }));
 }
 
+// Log middleware function
+app.use('/',async (req,res,next)=>{
+	const log_model = conn2.model("log_schema", Log.schema);
+	const log = new log_model({
+		method:req.method ,
+		path: req.path,
+		runmode: global.workMode
+	})
+	if (path != "/favicon.ico") {
+		await log.save();
+		console.log(log);
+	}
+	next()
+})
+
 // Router middleware
 app.use('/student', student_router);
-// app.use('/',async (req,res)=>{
-// 	const log_model = conn2.model("log_schema", Log.schema);
-// 	const log = new log_model({
-// 		method:req.method ,
-// 		path: req.path,
-// 		runmode: global.workMode
-// 	})
-// 	await log.save();
-// 	console.log(log);
-// 	next()
-// })
+
 
 // PUG connection to the app
 app.set('view engine', 'pug');
