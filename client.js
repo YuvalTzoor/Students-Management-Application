@@ -1,27 +1,18 @@
 const express = require("express");
 const internal_storage = {};
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 const fs = require("fs");
 var path = require("path");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
-const { MaxKey } = require("bson");
-const { ifStatement } = require("@babel/types");
 const app = express();
 let saveas = "";
-let expected_saveas_names = "";
-var go_to_next_command;
+//let expected_saveas_names = "";
 let result = "";
 var ID_array_to_return = [];
 var saveas_get_students = [];
 var internal_storage_Id = [];
-// const conn1 = (global.conn1 = mongoose.createConnection(
-// 	"mongodb://localhost/academy"
-// ));
 
-// const conn2 = (global.conn2 = mongoose.createConnection(
-// 	"mongodb://localhost/academylog"
-// ));
 app.use("/client_input", express.static("client_input"));
 //getting the file name from the client-Remember to wite like the following:client.js client_input/good file1.txt
 let arguments = process.argv.slice(2);
@@ -99,32 +90,23 @@ async function processLineByLine(file_name) {
 						//Taking the replay string and make into JSON string and then
 						//making it into JSON object in order to use the variables as required
 						//and saving it inside the saveas name inside the internal_storage
-						//console.log(reply + "reply");
+
 						let result_for_add = JSON.stringify(reply);
 						result_for_add = JSON.parse(result_for_add);
 						//the id of the added student
 						console.log(result_for_add[0]._id);
 						saveas = params[3];
 						internal_storage[saveas] = result_for_add[0];
-						//console.log(internal_storage[saveas] + "saveas");
-						//for testing!
-						// const the_doc_id = internal_storage[saveas]._id;
-						// console.log("the_doc_id: " + the_doc_id);
-						//console.log(internal_storage);
 					}
 
 					console.log(
 						"The reply of the student object that added to the data base:" +
 							JSON.stringify(reply)
 					);
-					// go_to_next_command = promise.resolve("done");
 				}
 
-				//console.log(run());
 				const firstPromise = await run();
-				//return firstPromise;
-				// console.log(go_to_next_command);
-				// go_to_next_command.then((reply) => {});
+
 				break;
 			}
 
@@ -187,23 +169,19 @@ async function processLineByLine(file_name) {
 							if (key == "_id") {
 								ID_array_to_return.push(value);
 							}
-							//console.log(`key:${key}  value: ${value}`);
 						});
 						//console.log("-------------------");
 						saveas_get_students = params[3];
 						if (params.length > 2) {
 							saveas_get_students = JSON.parse(saveas_get_students);
-							//console.log(saveas_get_students);
 						}
 
 						//counting the number of returned students objects for comparison
 					});
 					var client_validity = true;
-					// ID_array_to_return.forEach((id) => {
-					// 	console.log(id + " id");
-					// });
+
 					//if expected_num_documents is given then compare the number of returned students with the expected number
-					//console.log(objectLength(saveas_get_students));
+
 					if (
 						params[2] == "expected_num_documents" &&
 						params[3] == ID_array_to_return.length
@@ -217,22 +195,16 @@ async function processLineByLine(file_name) {
 						console.log("The number of returned students is not correct");
 						client_validity = false;
 					}
-					//var internal_storage_Id = [];
-					//console.log(saveas_get_students + " saveas_get_students");
+
 					//if expected_saveas_names is given then compare the returned students with the expected names
 					if (params[2] == "expected_saveas_names") {
 						saveas_get_students.forEach((saveas_name) => {
-							//console.log(saveas_name + " saveas_name");
-							//internal_storage[saveas_name] = ID_array_to_return[index];
 							try {
 								internal_storage_Id.push(internal_storage[saveas_name]._id);
 							} catch (err) {
 								console.log("The saveas name is not valid");
 								client_validity = false;
 							}
-							// console.log(internal_storage[saveas_name]);
-							// console.log(ID_array_to_return[index]);
-							//console.log(internal_storage_Id + "internal_storage_Id");
 						});
 						console.log(internal_storage_Id + "internal_storage_id");
 						function compareArrays(arr1, arr2) {
@@ -245,19 +217,6 @@ async function processLineByLine(file_name) {
 							console.log("The returned students are correct");
 						}
 					}
-					//console.log(internal_storage_Id[0] + "internal_storage _id");
-					//saving the id of the student in the another variable for testing purposes
-
-					//saving the data of the students inside the internal_storage
-					//according to the saveas name
-					// for (i = 0; i < params.length; i++) {
-					// 	if (i > 2) {
-					// 		saveas = params[i];
-					// 		console.log(saveas+"saveas");
-					// 		internal_storage[saveas] = data[i - 3];
-					// 	}
-					// }
-					//console.log(internal_storage);
 
 					console.log(result.length);
 
@@ -274,9 +233,8 @@ async function processLineByLine(file_name) {
 					}
 				}
 
-				//console.log(run());
 				const secondPromise = await run();
-				//return secondPromise;
+
 				break;
 			}
 
@@ -307,23 +265,6 @@ async function processLineByLine(file_name) {
 						console.log("The saveas name is not valid");
 					}
 
-					// saveas_get_students.forEach((saveas_name) => {
-					// 	if (saveas_name == saveas) {
-					// 		client_validity = true;
-					// 	}
-					// });
-
-					//console.log(saveas_name + " saveas_name");
-					//internal_storage[saveas_name] = ID_array_to_return[index];
-					// try {
-					// 	internal_storage_Id.push(internal_storage[saveas_name]._id);
-					// } catch (err) {
-					// 	console.log("The saveas name is not valid");
-					// 	client_validity = false;
-					// }
-					// console.log(internal_storage[saveas_name]);
-					// console.log(ID_array_to_return[index]);
-					//console.log(internal_storage_Id + "internal_storage_Id");
 					if (client_validity) {
 						const the_doc_id = internal_storage[saveas]._id;
 						let reply;
@@ -341,17 +282,6 @@ async function processLineByLine(file_name) {
 					}
 					//returning the student id of the got just got created and also saving the object into the
 					//internal_storage variable for future uses
-
-					// internal_storage[saveas] = result[0];
-					// console.log(internal_storage[saveas] + "saveas");
-					//for testing!
-					// //const the_doc_id = internal_storage[saveas]._id;
-					// console.log("the_doc_id: " + the_doc_id);
-					// console.log(internal_storage);
-					// console.log(
-					// 	"The reply of the student object that got updated in the data base:" +
-					// 		JSON.stringify(reply)
-					// );
 				}
 
 				if (params.length == 3) {
@@ -430,7 +360,7 @@ async function processLineByLine(file_name) {
 				}
 				async function run() {
 					let client_validity = false;
-					//console.log(internal_storage);
+
 					try {
 						if (internal_storage[params[1]] != undefined)
 							client_validity = true;
@@ -444,7 +374,7 @@ async function processLineByLine(file_name) {
 					if (client_validity) {
 						const the_doc_id = internal_storage[saveas]._id;
 						console.log(the_doc_id);
-						//console.log(JSON.stringify(the_doc_id));
+
 						let reply;
 						reply = await httpJSONRequest(
 							"post",
@@ -454,6 +384,7 @@ async function processLineByLine(file_name) {
 							"The reply of the student object that got deleted in the data base:" +
 								JSON.stringify(reply)
 						);
+						internal_storage[saveas]=null;
 					} else if (!client_validity) {
 						console.log("The saveas name is invalid");
 					}
@@ -481,12 +412,7 @@ async function processLineByLine(file_name) {
 					console.log(`Line ---- ${line} ---- was corrupted`);
 					break;
 				}
-				// try {
-				// 	JSON.parse(params[0]);
-				// } catch (err) {
-				// 	console.log(`Line ---- ${line} ---- was corrupted`);
-				// 	break;
-				// }
+
 				async function run() {
 					console.log("run");
 					let reply;

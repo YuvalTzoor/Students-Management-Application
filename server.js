@@ -32,7 +32,7 @@ if (global.workMode == "JSON") {
 	app.use(express.urlencoded({ extended: false }));
 }
 
-// Router middleware
+// Log middleware function
 app.use("/", async (req, res, next) => {
 	const log_model = conn2.model("log_schema", Log.schema);
 	const log = new log_model({
@@ -40,12 +40,15 @@ app.use("/", async (req, res, next) => {
 		path: req.path,
 		runmode: global.workMode,
 	});
+	//if the path is not relevant it will be ignored
 	if (path != "/favicon.ico") {
 		await log.save();
 		console.log(log);
 	}
 	next();
 });
+
+// Router middleware
 app.use("/student", student_router);
 
 // PUG connection to the app
@@ -53,8 +56,7 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 // A general message for illegal paths
-
-app.use("*", (req, res, next) => {
+app.use("*", (req, res) => {
 	res.send("Illegal path").status(404);
 });
 
