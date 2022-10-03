@@ -1,5 +1,10 @@
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-del_student st1
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st3
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st4
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st5
+add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st6
+del_all 
 update_student st1 {"toar":"phd"}
 
 add_course st1 {"cid":"35000","grade":85}

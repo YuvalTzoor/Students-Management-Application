@@ -13,6 +13,7 @@ and will keep the data of the added student and will not clean the parameters fr
 11)need to find how to retrieve the saveas from the internal storage(seems to be fixed just need to make sure with test cases)
 12)expected_num_documents is not working-fixed
 13)favicon log is appres and we sould prevent it-fixed
+14)after deleting student they got deleted from the internal storage(seems to be fixed just need to make sure with test cases)-fixed in the two delete endpoints
 
 Added-
 1)redirect after deleting the student-fixed

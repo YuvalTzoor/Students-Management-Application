@@ -1,4 +1,6 @@
+const e = require("express");
 const express = require("express");
+//The internal sto
 const internal_storage = {};
 //const mongoose = require("mongoose");
 const fs = require("fs");
@@ -384,7 +386,7 @@ async function processLineByLine(file_name) {
 							"The reply of the student object that got deleted in the data base:" +
 								JSON.stringify(reply)
 						);
-						internal_storage[saveas]=null;
+						internal_storage[saveas] = null;
 					} else if (!client_validity) {
 						console.log("The saveas name is invalid");
 					}
@@ -424,6 +426,22 @@ async function processLineByLine(file_name) {
 					console.log(
 						"The reply of the deleting all students objects that currently in the data base:" +
 							JSON.stringify(reply)
+					);
+					//rest the internal_storage after the delete all action
+					if (Object.keys(internal_storage).length > 0) {
+						console.log("The");
+						objectLength = Object.keys(internal_storage).length;
+						console.log(
+							"The number of objects in the internal storage is " + objectLength
+						);
+
+						for (var prop in internal_storage) {
+							delete internal_storage[prop];
+						}
+					}
+					objectLength = Object.keys(internal_storage).length;
+					console.log(
+						"The number of objects in the internal storage is " + objectLength
 					);
 				}
 
