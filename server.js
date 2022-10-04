@@ -41,7 +41,7 @@ app.use("/", async (req, res, next) => {
 		runmode: global.workMode,
 	});
 	//if the path is not relevant it will be ignored
-	if (path != "/favicon.ico") {
+	if (log.path != "/favicon.ico") {
 		await log.save();
 		console.log(log);
 	}
