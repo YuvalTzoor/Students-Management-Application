@@ -14,6 +14,8 @@ and will keep the data of the added student and will not clean the parameters fr
 12)expected_num_documents is not working-fixed
 13)favicon log is appres and we sould prevent it-fixed
 14)after deleting student they got deleted from the internal storage(seems to be fixed just need to make sure with test cases)-fixed in the two delete endpoints
+15)need to make error logs when saveas name is invalid!
+16)handel if there is an empty result from the get students endpoint at json mode(returning nan) 
 
 Added-
 1)redirect after deleting the student-fixed

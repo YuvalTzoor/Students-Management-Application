@@ -5,7 +5,7 @@ const Log = require("./models/log_model");
 const express = require("express");
 const path = require("path");
 const { default: mongoose } = require("mongoose");
-const uri = "mongodb://localhost:27017/academy";
+const uri = "mongodb://localhost/academy";
 global.conn1 = mongoose.createConnection("mongodb://localhost/academy");
 global.conn2 = mongoose.createConnection("mongodb://localhost/academylog");
 let app = express();
@@ -32,7 +32,7 @@ if (global.workMode == "JSON") {
 	app.use(express.urlencoded({ extended: false }));
 }
 
-// Log middleware function
+//Log middleware function
 app.use("/", async (req, res, next) => {
 	const log_model = conn2.model("log_schema", Log.schema);
 	const log = new log_model({

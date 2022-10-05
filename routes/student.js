@@ -105,7 +105,12 @@ router.get("/", async (req, res) => {
 					});
 				}
 				const students = await Student.find(filter);
-				const JSONrespond = JSON.stringify(students);
+				//creating an array of students id's
+				let students_id_to_return = [];
+				for (let i = 0; i < students.length; i++) {
+					students_id_to_return.push(students[i]._id);
+				}
+				const JSONrespond = JSON.stringify(students_id_to_return);
 				res.send(JSONrespond);
 				//console.log(bodyObj);
 			} catch {

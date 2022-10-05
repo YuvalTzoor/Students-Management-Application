@@ -1,25 +1,22 @@
 const e = require("express");
 const express = require("express");
-//The internal sto
 const internal_storage = {};
-//const mongoose = require("mongoose");
 const fs = require("fs");
 var path = require("path");
 const readline = require("readline");
 const httpJSONRequest = require("./httpJSONRequest");
 const app = express();
 let saveas = "";
-//let expected_saveas_names = "";
 let result = "";
-var ID_array_to_return = [];
-var saveas_get_students = [];
-var internal_storage_Id = [];
+let ID_array_to_return = [];
+let saveas_get_students = [];
+let internal_storage_Id = [];
 
 app.use("/client_input", express.static("client_input"));
 //getting the file name from the client-Remember to wite like the following:client.js client_input/good file1.txt
 let arguments = process.argv.slice(2);
-
 console.log(arguments);
+//handling the file name(if the file name have spaces(works with one space only between the each word)))
 let fullFileName = "";
 if (arguments.length == 1) {
 	fullFileName = arguments[0];
@@ -54,7 +51,10 @@ async function processLineByLine(file_name) {
 
 		switch (params[0]) {
 			case "add_student": {
-				//Checking if the line is valid or not
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is add_student it will continue to the next step
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "add_student") {
@@ -92,7 +92,6 @@ async function processLineByLine(file_name) {
 						//Taking the replay string and make into JSON string and then
 						//making it into JSON object in order to use the variables as required
 						//and saving it inside the saveas name inside the internal_storage
-
 						let result_for_add = JSON.stringify(reply);
 						result_for_add = JSON.parse(result_for_add);
 						//the id of the added student
@@ -122,8 +121,16 @@ async function processLineByLine(file_name) {
 					}
 					return result;
 				}
-				//getting filtered student works fine now needs to handle the saveas parameter!
-				//Checking if the line is valid or not
+
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is get_students and the params length is one(meaning that we need to get
+				//all the students from the db) it will stop and will continue to the next steps
+				//if the the first param is get_students and the params length
+				// is more than one(meaning that we need to get specific students from the db) it will continue to the next steps
+				//now,it will check if the next param is expected_saveas_names or expected_num_documents and if
+				//it is it will continue and will check the next param
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "get_students" && params.length == 1) {
@@ -148,6 +155,7 @@ async function processLineByLine(file_name) {
 				const get_data = JSON.parse(params[1]);
 				//getting students from the mongoDB database according to the given parameters
 				let query = "";
+				//creating the query string
 				Object.keys(get_data).forEach((key) => {
 					if (query) {
 						query += "&" + key + "=" + get_data[key];
@@ -159,79 +167,107 @@ async function processLineByLine(file_name) {
 				console.log(url);
 				async function run() {
 					let reply = "";
-					//let saveas_get_students = [];
 					reply = await httpJSONRequest("get", url);
 					//returning the student id ooj that got just got created for testing purposes
 					result = JSON.stringify(reply);
 					result = JSON.parse(result);
-					const data = reply;
-					//printing the data of all returned students
-					data.forEach((obj) => {
-						Object.entries(obj).forEach(([key, value]) => {
-							if (key == "_id") {
-								ID_array_to_return.push(value);
-							}
-						});
-						//console.log("-------------------");
-						saveas_get_students = params[3];
-						if (params.length > 2) {
-							saveas_get_students = JSON.parse(saveas_get_students);
-						}
-
-						//counting the number of returned students objects for comparison
-					});
-					var client_validity = true;
-
-					//if expected_num_documents is given then compare the number of returned students with the expected number
-
-					if (
-						params[2] == "expected_num_documents" &&
-						params[3] == ID_array_to_return.length
-					) {
-						console.log("The number of returned students is correct");
-						client_validity = true;
-					} else if (
-						params[2] == "expected_num_documents" &&
-						params[3] != ID_array_to_return.length
-					) {
-						console.log("The number of returned students is not correct");
-						client_validity = false;
+					//let data = reply;
+					//adding the id of all the students that got returned from the DB in order to the
+					//ID_array_to_return array to check if the response is valid or not
+					// data.forEach((obj) => {
+					// 	Object.entries(obj).forEach(([key, value]) => {
+					// 		if (key == "_id") {
+					// 			ID_array_to_return.push(value);
+					// 		}
+					// 	});
+					//console.log("-------------------");
+					saveas_get_students = params[3];
+					if (params.length > 2) {
+						saveas_get_students = JSON.parse(saveas_get_students);
 					}
+					//counting the number of returned students objects for comparison
 
-					//if expected_saveas_names is given then compare the returned students with the expected names
-					if (params[2] == "expected_saveas_names") {
-						saveas_get_students.forEach((saveas_name) => {
-							try {
-								internal_storage_Id.push(internal_storage[saveas_name]._id);
-							} catch (err) {
-								console.log("The saveas name is not valid");
+					let client_validity = true;
+					if (params[2] == "expected_num_documents") {
+						//if expected_num_documents is given then compare the number of returned students with the expected number
+						console.log(params[2] + "-------------------" + result);
+						if (
+							params[2] == "expected_num_documents" &&
+							params[3] == result.length
+						) {
+							console.log("The number of returned students is correct");
+							client_validity = true;
+						} else if (
+							params[2] == "expected_num_documents" &&
+							params[3] != result.length
+						) {
+							console.log("The number of returned students is not correct");
+							client_validity = false;
+						}
+					} else if (params[2] == "expected_saveas_names") {
+						console.log("saveas_get_students", saveas_get_students);
+						console.log(typeof saveas_get_students);
+						//if expected_saveas_names is given then compare the returned students with the expected names
+						if (
+							params[2] == "expected_saveas_names" &&
+							typeof saveas_get_students != "number"
+						) {
+							console.log("go into the if");
+							let i = 0;
+							saveas_get_students.forEach((saveas_name) => {
+								try {
+									internal_storage_Id.push(internal_storage[saveas_name]._id);
+									console.log("The saveas is valid");
+									
+									i++;
+								} catch (err) {
+									console.log("The saveas name is not valid");
+									client_validity = false;
+								}
+							});
+							console.log(i);
+							if (i == result.length) {
+								console.log("The saveas names are valid after checking");
+								client_validity = true;
+							} else {
+								console.log("The saveas names are not valid after checking");
 								client_validity = false;
 							}
-						});
-						console.log(internal_storage_Id + "internal_storage_id");
-						function compareArrays(arr1, arr2) {
-							if (arr1.length !== arr2.length) return (client_validity = false);
-							for (var i = 0; i < arr1.length; i++) {
-								if (arr1[i] !== arr2[i]) return (client_validity = false);
-							}
-						}
-						if (compareArrays(internal_storage_Id, ID_array_to_return)) {
-							console.log("The returned students are correct");
-						}
-					}
 
-					console.log(result.length);
+							console.log(internal_storage_Id + "internal_storage_id");
+							// function compareArrays(arr1, arr2) {
+							// 	if (arr1.length !== arr2.length)
+							// 		return (client_validity = false);
+							// 	for (var i = 0; i < arr1.length; i++) {
+							// 		if (arr1[i] !== arr2[i]) return (client_validity = false);
+							// 	}
+							// }
+							// if (compareArrays(internal_storage_Id, result)) {
+							// 	console.log("The returned students are correct");
+							// } else {
+							// 	console.log("The returned students are not correct");
+							// }
+						}
 
-					console.log(
-						"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
-							ID_array_to_return +
-							"\n" +
-							"and the validity of the client is: "
-					);
-					if (client_validity) {
-						console.log("The replay from the server is valid" + "\n\n");
-					} else if (!client_validity) {
-						console.log("The replay from the server is invalid" + "\n\n");
+						console.log(result.length + "result.length");
+						if (result.length == 0) {
+							console.log("The reply is empty");
+						}
+						console.log(JSON.stringify(result));
+
+						console.log(
+							"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
+								JSON.stringify(result) +
+								"" +
+								"\n" +
+								"and the validity of the client is: "
+						);
+
+						if (client_validity) {
+							console.log("The replay from the server is valid" + "\n\n");
+						} else if (!client_validity) {
+							console.log("The replay from the server is invalid" + "\n\n");
+						}
 					}
 				}
 
@@ -241,6 +277,10 @@ async function processLineByLine(file_name) {
 			}
 
 			case "update_student": {
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is update_student it will continue to the next step
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "update_student") {
@@ -265,6 +305,7 @@ async function processLineByLine(file_name) {
 						}
 					} catch (err) {
 						console.log("The saveas name is not valid");
+						//creating the log of the action
 					}
 
 					if (client_validity) {
@@ -295,6 +336,10 @@ async function processLineByLine(file_name) {
 				break;
 			}
 			case "add_course": {
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is add_course it will continue to the next step
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "add_course") {
@@ -348,6 +393,11 @@ async function processLineByLine(file_name) {
 			}
 
 			case "del_student": {
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is del_student it will continue to the next step
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
+
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "del_student") {
@@ -401,7 +451,11 @@ async function processLineByLine(file_name) {
 			}
 
 			case "del_all": {
-				//Checking if the line is valid or not
+				//Checking if the line is valid or not in the following way:
+				//if the the first param is del_all it will continue to the next step
+				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
+				//with the problematic param(the first one the parsing failed on) and the line itself
+
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "del_all") {

@@ -1,16 +1,11 @@
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-del_student st1
-update_student st1 {"toar":"phd"}
-get_students {"toar":"ba"} expected_saveas_names ["st1","st2"]
-add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
-update_student st2 {"toar":"phd"}
-add_course st1 {"cid":"35000","grade":85}
+add_student {"id":"205541601","toar":"phd","city":"RG","name":"oded1"} saveas st2
+get_students {"city":"TA"}
+get_students {"city":"RG"}
+get_students {"toar":"ba"} expected_saveas_names ["st1"]
+get_students {"toar":"ba"} expected_num_documents 2
+get_students {"toar":"phd"} expected_saveas_names ["st2"]
 
 
 
 
-add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
-add_course st1 {"cid":"35000","grade":85}
-
-
-update_student st1 {"toar":"phd"}
