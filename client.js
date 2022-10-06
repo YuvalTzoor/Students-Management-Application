@@ -112,6 +112,9 @@ async function processLineByLine(file_name) {
 			}
 
 			case "get_students": {
+				//these two flags will be used later on to see if the request is valid or not
+				let start_flag = true;
+				let middle_flag = true;
 				function objectLength(obj) {
 					var result = 0;
 					for (var prop in obj) {
@@ -131,12 +134,12 @@ async function processLineByLine(file_name) {
 				//it is it will continue and will check the next param
 				//and if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
 				//with the problematic param(the first one the parsing failed on) and the line itself
+
 				try {
 					for (i = 0; i < params.length; i++) {
 						if (params[0] == "get_students" && params.length == 1) {
 							break;
-						}
-						if (i == 2) {
+						} else if (i == 2) {
 							if (
 								params[i] == "expected_saveas_names" ||
 								params[i] == "expected_num_documents"
@@ -149,129 +152,204 @@ async function processLineByLine(file_name) {
 				} catch (err) {
 					console.log(`The parmater ${params[i]} ---- was corrupted`);
 					console.log(`Line ---- ${line} ---- was corrupted`);
+					start_flag = false;
 					break;
 				}
-				console.log("get_students");
-				const get_data = JSON.parse(params[1]);
-				//getting students from the mongoDB database according to the given parameters
-				let query = "";
-				//creating the query string
-				Object.keys(get_data).forEach((key) => {
-					if (query) {
-						query += "&" + key + "=" + get_data[key];
-					} else {
-						query += key + "=" + get_data[key];
-					}
-				});
-				const url = "http://localhost:8080/student/?" + query;
-				console.log(url);
-				async function run() {
-					let reply = "";
-					reply = await httpJSONRequest("get", url);
-					//returning the student id ooj that got just got created for testing purposes
-					result = JSON.stringify(reply);
-					result = JSON.parse(result);
-					//let data = reply;
-					//adding the id of all the students that got returned from the DB in order to the
-					//ID_array_to_return array to check if the response is valid or not
-					// data.forEach((obj) => {
-					// 	Object.entries(obj).forEach(([key, value]) => {
-					// 		if (key == "_id") {
-					// 			ID_array_to_return.push(value);
-					// 		}
-					// 	});
-					//console.log("-------------------");
-					saveas_get_students = params[3];
-					if (params.length > 2) {
-						saveas_get_students = JSON.parse(saveas_get_students);
-					}
-					//counting the number of returned students objects for comparison
-
-					let client_validity = true;
-					if (params[2] == "expected_num_documents") {
-						//if expected_num_documents is given then compare the number of returned students with the expected number
-						console.log(params[2] + "-------------------" + result);
-						if (
-							params[2] == "expected_num_documents" &&
-							params[3] == result.length
-						) {
-							console.log("The number of returned students is correct");
-							client_validity = true;
-						} else if (
-							params[2] == "expected_num_documents" &&
-							params[3] != result.length
-						) {
-							console.log("The number of returned students is not correct");
-							client_validity = false;
+				//see if the request is in the valid length or have valid params and if so it will start the running process
+				if (params.length <= 4 && start_flag) {
+					try {
+						for (i = 0; i < params.length; i++) {
+							if (params[0] == "get_students" && params.length == 1) {
+								break;
+							}
+							if (i == 2) {
+								if (
+									params[i] == "expected_saveas_names" ||
+									params[i] == "expected_num_documents"
+								) {
+									continue;
+								}
+								JSON.parse(params[i]);
+							}
 						}
-					} else if (params[2] == "expected_saveas_names") {
-						console.log("saveas_get_students", saveas_get_students);
-						console.log(typeof saveas_get_students);
-						//if expected_saveas_names is given then compare the returned students with the expected names
-						if (
-							params[2] == "expected_saveas_names" &&
-							typeof saveas_get_students != "number"
-						) {
-							console.log("go into the if");
-							let i = 0;
-							saveas_get_students.forEach((saveas_name) => {
-								try {
-									internal_storage_Id.push(internal_storage[saveas_name]._id);
-									console.log("The saveas is valid");
-									
-									i++;
-								} catch (err) {
-									console.log("The saveas name is not valid");
+					} catch (err) {
+						console.log(`The parmater ${params[i]} ---- was corrupted`);
+						console.log(`Line ---- ${line} ---- was corrupted`);
+						break;
+					}
+					console.log("get_students");
+					const get_data = JSON.parse(params[1]);
+					//getting students from the mongoDB database according to the given parameters
+					let query = "";
+					//creating the query string
+					Object.keys(get_data).forEach((key) => {
+						console.log(key);
+						console.log(get_data[key]);
+						let temp_get_data = get_data[key];
+						if (key == "avg") {
+							key = "grade";
+							get_data[key] = temp_get_data;
+						}
+						console.log(get_data[key]);
+						//Generating the query string and if the the key avg is found it will change it to grade and also will also handel the
+						//value of that key
+						//(we done it for convenience purposes)
+						if (query) {
+							query += "&" + key + "=" + get_data[key];
+						} else {
+							if (key == "avg") {
+								key = "grade";
+								get_data[key] = temp_get_data;
+							}
+							console.log(get_data[key]);
+							// if (key == "avg") key = "grade";
+							query += key + "=" + get_data[key];
+						}
+					});
+					const url = "http://localhost:8080/student/?" + query;
+					console.log(url);
+					async function run() {
+						let reply = "";
+						reply = await httpJSONRequest("get", url);
+						result = JSON.stringify(reply);
+						result = JSON.parse(result);
+						// saveas_get_students = params[3];
+						// saveas_get_students = JSON.parse(saveas_get_students);
+						//checking if the saveas param is valid
+						console.log(params[3]);
+						if (params[3] != undefined) {
+							saveas_get_students = params[3];
+							try {
+								saveas_get_students = JSON.parse(saveas_get_students);
+							} catch (err) {
+								middle_flag = false;
+							}
+							// console.log("The1");
+						} else {
+							middle_flag = true;
+							// console.log("The2");
+						}
+						// try {
+						// 	saveas_get_students = JSON.parse(saveas_get_students);
+						// } catch (err) {
+						// 	middle_flag = false;
+						// }
+						console.log("pass the try");
+						// if (params.length > 2) {
+						// 	saveas_get_students = params[3];
+						// 	try {
+						// 		saveas_get_students = JSON.parse(saveas_get_students);
+						// 	} catch (err) {
+						// 		console.log(`The parmater ${params[i]} ---- was corrupted`);
+						// 		console.log(`Line ---- ${line} ---- was corrupted`);
+						// 	}
+						// }
+						//counting the number of returned students objects for comparison
+						let client_validity = true;
+						if (middle_flag) {
+							if (params[2] == "expected_num_documents") {
+								//if expected_num_documents is given then compare the number of returned students with the expected number
+								console.log(params[2] + "-------------------" + result);
+								if (
+									params[2] == "expected_num_documents" &&
+									params[3] == result.length
+								) {
+									console.log("The number of returned students is correct");
+									client_validity = true;
+								} else if (
+									params[2] == "expected_num_documents" &&
+									params[3] != result.length
+								) {
+									console.log("The number of returned students is not correct");
 									client_validity = false;
 								}
-							});
-							console.log(i);
-							if (i == result.length) {
-								console.log("The saveas names are valid after checking");
-								client_validity = true;
-							} else {
-								console.log("The saveas names are not valid after checking");
-								client_validity = false;
+							} else if (params[2] == "expected_saveas_names") {
+								console.log("saveas_get_students", saveas_get_students);
+								console.log(typeof saveas_get_students);
+								//if expected_saveas_names is given then a count will be made for each student and will be compared with the
+								//number of saveas number that in the query
+								if (
+									params[2] == "expected_saveas_names" &&
+									typeof saveas_get_students != "number"
+								) {
+									let saveas_match_counter = 0;
+									saveas_get_students.forEach((saveas_name) => {
+										try {
+											internal_storage_Id.push(
+												internal_storage[saveas_name]._id
+											);
+											console.log("The saveas is valid");
+											saveas_match_counter++;
+										} catch (err) {
+											console.log("The saveas name is not valid");
+											client_validity = false;
+										}
+									});
+									// console.log(saveas_match_counter);
+									// console.log(result);
+									// console.log(internal_storage_Id);
+									// console.log(result.length);
+									//will check if the number of saveas names in the query is equal to the number at the saveas_match_counter
+									//or the internal_storage_Id array and the result array are equal and if so,it will return true at the client_validity
+									//variable
+									if (
+										saveas_match_counter == result.length ||
+										JSON.stringify(internal_storage_Id) ==
+											JSON.stringify(result)
+									) {
+										//console.log("The saveas names are valid after checking");
+										client_validity = true;
+									} else {
+										//console.log("The saveas names are not valid after checking");
+										client_validity = false;
+									}
+
+									//console.log(internal_storage_Id + "internal_storage_id");
+								}
+
+								//console.log(result.length + "result.length");
+								//if the result array is empty the user will get a message about it
+								if (result.length == 0) {
+									console.log("The reply is empty");
+								}
+								//console.log(JSON.stringify(result));
+								//In this part we will give the reply and also will tell the user if the reply is valid or not
+								console.log(
+									"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
+										JSON.stringify(result) +
+										"" +
+										"\n" +
+										"and the validity of the client is: "
+								);
+
+								if (client_validity) {
+									console.log("The replay from the server is valid" + "\n\n");
+								} else if (!client_validity) {
+									console.log("The replay from the server is invalid" + "\n\n");
+								}
 							}
-
-							console.log(internal_storage_Id + "internal_storage_id");
-							// function compareArrays(arr1, arr2) {
-							// 	if (arr1.length !== arr2.length)
-							// 		return (client_validity = false);
-							// 	for (var i = 0; i < arr1.length; i++) {
-							// 		if (arr1[i] !== arr2[i]) return (client_validity = false);
-							// 	}
-							// }
-							// if (compareArrays(internal_storage_Id, result)) {
-							// 	console.log("The returned students are correct");
-							// } else {
-							// 	console.log("The returned students are not correct");
-							// }
-						}
-
-						console.log(result.length + "result.length");
-						if (result.length == 0) {
+						} else if (result.length == 0) {
 							console.log("The reply is empty");
 						}
-						console.log(JSON.stringify(result));
 
-						console.log(
-							"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
-								JSON.stringify(result) +
-								"" +
-								"\n" +
-								"and the validity of the client is: "
-						);
-
-						if (client_validity) {
-							console.log("The replay from the server is valid" + "\n\n");
-						} else if (!client_validity) {
-							console.log("The replay from the server is invalid" + "\n\n");
+						//console.log(JSON.stringify(result));
+						console.log(middle_flag);
+						//if there was not any expected_num_documents or expected_saveas_names in the query then the client will just get the reply
+						if (middle_flag) {
+							console.log(
+								"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
+									JSON.stringify(result)
+							);
+						} else if (!middle_flag) {
+							console.log("one of the parameters was invalid");
 						}
 					}
+					const secondPromise = await run();
 				}
-
-				const secondPromise = await run();
+				//If there are more then 4 parameters the user will get a notification that the query is not valid
+				else {
+					console.log("The number of parameters is not valid");
+				}
 
 				break;
 			}
@@ -295,8 +373,8 @@ async function processLineByLine(file_name) {
 				}
 
 				async function run() {
+					//checking if the save as parameter is valid and can be found in the internal_storage
 					let client_validity = false;
-					//console.log(internal_storage);
 					try {
 						if (internal_storage[params[1]] != undefined)
 							client_validity = true;
@@ -305,7 +383,6 @@ async function processLineByLine(file_name) {
 						}
 					} catch (err) {
 						console.log("The saveas name is not valid");
-						//creating the log of the action
 					}
 
 					if (client_validity) {
@@ -326,10 +403,10 @@ async function processLineByLine(file_name) {
 					//returning the student id of the got just got created and also saving the object into the
 					//internal_storage variable for future uses
 				}
-
+				//will also check if the number of parameters is valid
 				if (params.length == 3) {
 					const thirdPromise = await run();
-				} else if (params.length > 3) {
+				} else if (params.length != 3) {
 					console.log("The number of parameters is not valid");
 				}
 
@@ -354,6 +431,7 @@ async function processLineByLine(file_name) {
 				}
 
 				async function run() {
+					//checking if the save as parameter is valid and can be found in the internal_storage
 					let client_validity = false;
 					//console.log(internal_storage);
 					try {
@@ -383,9 +461,10 @@ async function processLineByLine(file_name) {
 					}
 				}
 				console.log(params.length);
+				//will also check if the number of parameters is valid
 				if (params.length == 3) {
 					const forthPromise = await run();
-				} else if (params.length > 3) {
+				} else if (params.length != 3) {
 					console.log("The number of parameters is not valid");
 				}
 
@@ -411,6 +490,7 @@ async function processLineByLine(file_name) {
 					break;
 				}
 				async function run() {
+					//checking if the save as parameter is valid and can be found in the internal_storage
 					let client_validity = false;
 
 					try {
@@ -436,11 +516,13 @@ async function processLineByLine(file_name) {
 							"The reply of the student object that got deleted in the data base:" +
 								JSON.stringify(reply)
 						);
+						//delete the student also from the internal_storage
 						internal_storage[saveas] = null;
 					} else if (!client_validity) {
 						console.log("The saveas name is invalid");
 					}
 				}
+				//will also check if the number of parameters is valid
 				if (params.length == 2) {
 					const fifthPromise = await run();
 				} else if ((params.length = !2)) {
@@ -488,7 +570,8 @@ async function processLineByLine(file_name) {
 						console.log(
 							"The number of objects in the internal storage is " + objectLength
 						);
-
+						//delete all the students also from the internal_storage as well because they are not in the data base anymore
+						//so they are not valid anymore
 						for (var prop in internal_storage) {
 							delete internal_storage[prop];
 						}
@@ -498,8 +581,11 @@ async function processLineByLine(file_name) {
 						"The number of objects in the internal storage is " + objectLength
 					);
 				}
-
-				const sixthPromise = await run();
+				if (params.length == 1) {
+					const sixthPromise = await run();
+				} else if ((params.length = !1)) {
+					console.log("The number of parameters is not valid");
+				}
 
 				break;
 			}

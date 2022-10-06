@@ -99,12 +99,14 @@ router.get("/", async (req, res) => {
 					}
 				}
 				if (bodyObj.grade && bodyObj.grade.trim() != "") {
+					console.log("grade is not empty");
 					avg_num = bodyObj.grade * 1;
 					filter["$expr"]["$and"].push({
 						$gte: [{ $avg: "$courses.grade" }, avg_num],
 					});
 				}
 				const students = await Student.find(filter);
+				console.log(students);
 				//creating an array of students id's
 				let students_id_to_return = [];
 				for (let i = 0; i < students.length; i++) {
