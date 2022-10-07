@@ -177,37 +177,52 @@ async function processLineByLine(file_name) {
 						console.log(`Line ---- ${line} ---- was corrupted`);
 						break;
 					}
-					console.log("get_students");
-					const get_data = JSON.parse(params[1]);
-					//getting students from the mongoDB database according to the given parameters
+					let get_data = "";
 					let query = "";
-					//creating the query string
-					Object.keys(get_data).forEach((key) => {
-						console.log(key);
-						console.log(get_data[key]);
-						let temp_get_data = get_data[key];
-						if (key == "avg") {
-							key = "grade";
-							get_data[key] = temp_get_data;
-						}
-						console.log(get_data[key]);
-						//Generating the query string and if the the key avg is found it will change it to grade and also will also handel the
-						//value of that key
-						//(we done it for convenience purposes)
-						if (query) {
-							query += "&" + key + "=" + get_data[key];
-						} else {
+					let url = "";
+					console.log("get_students");
+					//if the params length is one it means that we need to get all the students from the db
+					//and if it is more than one it means that we need to get specific students from the db according to the params
+					//that will pass to the filter 
+					if (params.length > 1) {
+						get_data = JSON.parse(params[1]);
+					} else {
+						get_data = params[0];
+						query = get_data;
+					}
+					
+					//creating the query string according to the number of the params
+					if (query != get_data) {
+						Object.keys(get_data).forEach((key) => {
+							console.log(key);
+							console.log(get_data[key]);
+							let temp_get_data = get_data[key];
 							if (key == "avg") {
 								key = "grade";
 								get_data[key] = temp_get_data;
 							}
 							console.log(get_data[key]);
-							// if (key == "avg") key = "grade";
-							query += key + "=" + get_data[key];
-						}
-					});
-					const url = "http://localhost:8080/student/?" + query;
-					console.log(url);
+							//Generating the query string and if the the key avg is found it will change it to grade and also will also handel the
+							//value of that key
+							//(we done it for convenience purposes)
+							if (query) {
+								query += "&" + key + "=" + get_data[key];
+							} else {
+								if (key == "avg") {
+									key = "grade";
+									get_data[key] = temp_get_data;
+								}
+								console.log(get_data[key]);
+								// if (key == "avg") key = "grade";
+								query += key + "=" + get_data[key];
+							}
+						});
+						//making the url with the query string
+						url = "http://localhost:8080/student/?" + query;
+					} else {
+						url = "http://localhost:8080/student/?" + query;
+						console.log(url);
+					}
 					async function run() {
 						let reply = "";
 						reply = await httpJSONRequest("get", url);

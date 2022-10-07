@@ -1,4 +1,5 @@
-del_all
+
+
 get_students {"city":"RG"} expected_saveas_names st1
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st1
 get_students {"city":"RG"} expected_saveas_names ["st1"]
@@ -7,8 +8,12 @@ del_student st6
 add_course st6 {"cid":"35000","grade":85}
 add_course st1 {"cid":"35000","grade":100}
 get_students {"avg":60} expected_saveas_names ["st6"]
+get_students {"avg":60} expected_saveas_names st1
+get_students {"avg":60} expected_saveas_names ["st1"]
 add_student {"id":"205541601","toar":"ba","city":"RG","name":"oded1"} saveas st2
 get_students {"city":"RG","avg":80}
+get_students
+
 
 
 
