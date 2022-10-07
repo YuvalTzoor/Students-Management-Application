@@ -67,7 +67,7 @@ async function processLineByLine(file_name) {
 				//checking if the payload is valid
 				try {
 					console.log(i);
-					// for (i; i < params.length; i++) {
+					
 					test_parse = JSON.parse(params[1]);
 					console.log(test_parse);
 				} catch (err) {
@@ -218,7 +218,7 @@ async function processLineByLine(file_name) {
 									get_data[key] = temp_get_data;
 								}
 								console.log(get_data[key]);
-								// if (key == "avg") key = "grade";
+							
 								query += key + "=" + get_data[key];
 							}
 						});
@@ -318,7 +318,7 @@ async function processLineByLine(file_name) {
 								if (result.length == 0) {
 									console.log("The reply is empty");
 								}
-								//console.log(JSON.stringify(result));
+							
 								//In this part we will give the reply and also will tell the user if the reply is valid or not
 								console.log(
 									"The reply of the get student client endpoint is the following(The _id of all the students that matches to the filter): " +
@@ -338,7 +338,7 @@ async function processLineByLine(file_name) {
 							console.log("The reply is empty");
 						}
 
-						//console.log(JSON.stringify(result));
+				
 						console.log(middle_flag);
 						//if there was not any expected_num_documents or expected_saveas_names in the query then the client will just get the reply
 						if (middle_flag) {
@@ -356,7 +356,6 @@ async function processLineByLine(file_name) {
 				else {
 					console.log("The number of parameters is not valid");
 				}
-
 				break;
 			}
 
