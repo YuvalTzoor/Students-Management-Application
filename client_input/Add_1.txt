@@ -1,5 +1,8 @@
 add_student {"id":"205541601","toar":"ba","city":"TLV","name":"oded1"} saveas st2
+del_student st2
 get_students {"city":"TLV"} expected_saveas_names ["st2"]
 get_students {"city":"TLV"} expected_saveas_names ["st1"]
 add_course st2 {"cid":"3 5000""grade":100}
 update_student st2 {"toar":"ph d"}
+update_student st2 {"toar":"phd"}
+update_student st6 {"toar":"phd"}

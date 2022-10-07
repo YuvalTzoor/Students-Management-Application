@@ -2,18 +2,16 @@
 
 get_students {"city":"RG"} expected_saveas_names st1
 add_student { "i d":"205541601","toar":"ba" ,"c ity":"RG","name":"oded 1"}
+add_student {"id":"205541601","toar":"ba","city":"TLV","name":"oded1"} saveas st2
+add_course st2 {"cid":"35000","grade":100}
+
 get_students {"cit y" :"RG"} expected_saveas_n ames ["st 1"]
 update_student {"toar":"phd"}
 del_student st6
+del_student
+del_student st2
 add_course st6 {"cid":"35000","grade":85}
-add_course st1 {"cid":"35000","grade":100}
-get_students {"avg":60} expected_saveas_names ["st6"]
-get_students {"avg":60} expected_saveas_names st1
-get_students {"avg":60} expected_saveas_names ["st1"]
-add_student {"id":"205541601","toar":"ba","city":"TLV","name":"oded1"} saveas st2
-get_students {"city":"TLV"} expected_saveas_names st2
-get_students {"city":"RG","avg":80}
-get_students
+add_course st2 {"cid":"35000","grade":100}
 
 
 
