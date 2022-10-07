@@ -6,3 +6,4 @@ add_course st2 {"cid":"3 5000""grade":100}
 update_student st2 {"toar":"ph d"}
 update_student st2 {"toar":"phd"}
 update_student st6 {"toar":"phd"}
+del_all

@@ -361,10 +361,10 @@ async function processLineByLine(file_name) {
 			}
 
 			case "update_student": {
-				//Checking if the line is valid or not in the following way(after making sure that we the 
+				//Checking if the line is valid or not in the following way(after making sure that we the
 				//number of parameters is valid)):
-				//if the parsing of the payload params fails(meaning that the line is not valid) it will print an error message
-				//with the problematic param(the first one the parsing failed on) and the line itself
+				//if the parsing of the payload params fails(meaning that the line is not valid) it will print an error message with the line itself
+				//and will not send the query to the server
 				if (params.length == 3) {
 					try {
 						JSON.parse(params[2]);
@@ -415,9 +415,10 @@ async function processLineByLine(file_name) {
 				break;
 			}
 			case "add_course": {
-				//Checking if the line is valid or not in the following way:
-				// if the parsing of the payload params fails(meaning that the line is not valid) it will print an error message
-				//with the problematic param(the first one the parsing failed on) and the line itself
+				//Checking if the line is valid or not in the following way(after making sure that we the
+				//number of parameters is valid)):
+				//if the parsing of the payload params fails(meaning that the line is not valid) it will print an error message with the line itself
+				//and will not send the query to the server
 				if (params.length == 3) {
 					try {
 						JSON.parse(params[2]);
@@ -469,19 +470,6 @@ async function processLineByLine(file_name) {
 			}
 
 			case "del_student": {
-				//Checking if the line is valid or not in the following way:
-				// if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
-				//with the problematic param(the first one the parsing failed on) and the line itself
-				//we dont need these chack because the only parameter is the saveas name!
-				// try {
-				// 	for (i = 1; i < params.length; i++) {
-				// 		JSON.parse(params[i]);
-				// 	}
-				// } catch (err) {
-				// 	console.log(`The parmater ${params[i]} ---- was corrupted`);
-				// 	console.log(`Line ---- ${line} ---- was corrupted`);
-				// 	break;
-				// }
 				async function run() {
 					//checking if the save as parameter is valid and can be found in the internal_storage
 					let client_validity = false;
@@ -526,20 +514,6 @@ async function processLineByLine(file_name) {
 			}
 
 			case "del_all": {
-				//Checking if the line is valid or not in the following way:
-				// if the parsing of the next params fails(meaning that the line is not valid) it will print an error message
-				//with the problematic param(the first one the parsing failed on) and the line itself
-
-				try {
-					for (i = 0; i < params.length; i++) {
-						JSON.parse(params[i]);
-					}
-				} catch (err) {
-					console.log(`The parmater ${params[i]} ---- was corrupted`);
-					console.log(`Line ---- ${line} ---- was corrupted`);
-					break;
-				}
-
 				async function run() {
 					console.log("run");
 					let reply;
