@@ -4,7 +4,7 @@ const { default: mongoose } = require("mongoose");
 const Student = require("../models/student_model");
 const router = express.Router();
 
-//// Utilities Area (need to move to an external file) ////
+/ Utilities Area (need to move to an external file) /;
 
 // Object that holds values for persistence(add form)
 const obj = {

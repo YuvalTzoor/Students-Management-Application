@@ -1,0 +1,4 @@
+"add_student {""id"":""205541601"",""toar"":""ba"",""city"":""RG"",""name"":""oded1""} saveas st1"
+"add_student {""id"":""205541602"",""toar"":""ba"",""city"":""RG"",""name"":""oded2""} saveas st1"
+"add_student {""id"":""205541603"",""toar"":""ba"",""city"":""RG"",""name"":""oded3""} saveas st2"
+"add_student {""id"":""205541604"",""toar"":""ba"",""city"":""RG"",""name"":""oded4""} saveas st2"
